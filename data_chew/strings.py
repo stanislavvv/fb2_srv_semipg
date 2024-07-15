@@ -3,16 +3,17 @@
 
 import codecs
 import unicodedata as ud
+import typing
 
 
-def strnull(string):
+def strnull(string: typing.Optional[str]=None) -> str:
     """return empty string if None, else return content"""
     if string is None:
         return ""
     return str(string)
 
 
-def unicode_upper(string: str):
+def unicode_upper(string: str) -> str:
     """custom UPPER + normalize for sqlite and other"""
     ret = ud.normalize('NFKD', string)
     ret = ret.upper()
@@ -22,7 +23,7 @@ def unicode_upper(string: str):
     return ret
 
 
-def strlist(string):
+def strlist(string: typing.Union[str, list[str]]) -> str:
     """return string or first element of list"""
     if isinstance(string, str):
         return strnull(string)
@@ -31,7 +32,7 @@ def strlist(string):
     return strnull(str(string))
 
 
-def strip_quotes(string: str):
+def strip_quotes(string: str) -> str:
     """
     '"word word"' -> 'word word'
     '"word" word' -> '`word` word'
@@ -45,7 +46,7 @@ def strip_quotes(string: str):
     return string
 
 
-def quote_string(string, errors="strict"):
+def quote_string(string: str, errors: str="strict") -> str:
     """quote string for sql"""
     if string is None:
         return None
@@ -58,7 +59,7 @@ def quote_string(string, errors="strict"):
                                    nul_index, nul_index + 1, "NUL not allowed")
         error_handler = codecs.lookup_error(errors)
         replacement, _ = error_handler(error)
-        encodable = encodable.replace("\x00", replacement)
+        encodable = encodable.replace("\x00", str(replacement))
 
     # OLD return "\"" + encodable.replace("\"", "\"\"") + "\""
     return encodable.replace("\'", "\'\'")

@@ -1,6 +1,7 @@
 PYTHON=/usr/bin/python3
 FLAKE8_ARGS=--max-line-length=120
 PYLINT_ARGS=--max-line-length=120 --ignore-imports=yes --min-similarity-lines=8
+MYPY_ARGS=--namespace-packages --ignore-missing-imports --strict
 DATA=data
 export FLASK_ENV=prod
 
@@ -23,6 +24,9 @@ flakeall:
 
 lintall:
 	find . -not -path "./venv/*" -not -path "./tmp/*" -name '*.py' -print0 | xargs -0 -n 100 pylint $(PYLINT_ARGS)
+
+mypyall:
+	find . -not -path "./venv/*" -not -path "./tmp/*" -name '*.py' -print0 | xargs -0 -n 1 mypy $(MYPY_ARGS)
 
 update:
 	@echo "------ lists ------"

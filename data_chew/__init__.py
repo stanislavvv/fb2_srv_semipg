@@ -32,6 +32,9 @@ def create_booklist(inpx_data, zip_file):  # pylint: disable=C0103
     """(re)create .list from .zip"""
 
     booklist = zip_file + ".list"
+    booklistgz = zip_file + ".list.gz"
+    if os.path.exists(booklistgz):
+        os.remove(booklistgz)  # fix simultaneous .list and .list.gz
     try:
         with open(booklist, 'w', encoding='utf-8') as blist:
 
