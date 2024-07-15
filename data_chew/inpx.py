@@ -11,7 +11,7 @@ from .strings import strip_quotes
 from .data import num2int
 
 
-def array_strip_empty(arr):
+def array_strip_empty(arr: list[str]) -> list[str]:
     """cleanup empty strings from array of strings"""
     ret = []
     for elem in arr:
@@ -24,7 +24,7 @@ def array_strip_empty(arr):
     return ret
 
 
-def authors2fields(authors):
+def authors2fields(authors: list[str]):
     """authors names from strings[] to struct[]"""
     ret = []
     for auth in authors:
@@ -62,7 +62,7 @@ def authors2fields(authors):
     return ret
 
 
-def get_line_fields(line):
+def get_line_fields(line: str):
     """get file data from .inpx line
 
     Fields in record:
@@ -115,7 +115,7 @@ def get_line_fields(line):
         return None, None
 
 
-def get_inpx_meta(inpx_data, zip_file):
+def get_inpx_meta(inpx_data, zip_file):  #FixMe types
     """retrieve data from entire .inpx file"""
     ret = {}
     inp_file = os.path.basename(zip_file).replace(".zip", ".inp")

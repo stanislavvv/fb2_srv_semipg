@@ -16,6 +16,7 @@ import sys
 from datetime import datetime
 
 import xmltodict
+import typing
 
 from bs4 import BeautifulSoup
 from PIL import Image
@@ -30,19 +31,19 @@ data_config = {
 }
 
 
-def set_data_config(name, value):
+def set_data_config(name: typing.Optional[str], value: int) -> None:
     """set internal configuration from main script"""
     if name is not None and name in data_config:
         data_config[name] = value
 
 
-def str_normalize(string: str):
+def str_normalize(string: str) -> str:
     """will be normalize string for make_id and compare"""
     ret = unicode_upper(string)
     return ret
 
 
-def make_id(name):
+def make_id(name: typing.Optional[str]) -> str:
     """get name, strip quotes from begin/end, return md5"""
     name_str = "--- unknown ---"
     if name is not None and name != "":
@@ -54,7 +55,17 @@ def make_id(name):
     return hashlib.md5(norm_name.encode('utf-8').upper()).hexdigest()
 
 
-def get_genre(genr):
+def get_genre(
+    genr: typing.Union[
+        str,
+        list[str],
+        list[dict[str, str]],
+        list[list[str]],
+        dict[str, str],
+        dict[str, dict[str, str]],
+        dict[str, list[str]]
+    ]
+) -> list[str]:
     """return array of genres from sometimes strange struct"""
     # pylint: disable=C0103,R0912
     ret = []
@@ -87,7 +98,7 @@ def get_genre(genr):
     return ret
 
 
-def get_author_struct(author):
+def get_author_struct(author):  #FixMe types
     """return [{"name": "Name", "id": "id"}, ...] for author(s)"""
     # pylint: disable=R0912
     ret = [{"name": '--- unknown ---', "id": make_id('--- unknown ---')}]  # default
@@ -136,7 +147,7 @@ def get_author_struct(author):
     return ret
 
 
-def num2int(num: str, context: str):
+def num2int(num: str, context: str) -> int:
     """number in string or something to integer"""
     try:
         ret = int(num)
@@ -148,7 +159,7 @@ def num2int(num: str, context: str):
         return -1
 
 
-def get_sequence(seq, zip_file, filename):
+def get_sequence(seq, zip_file: str, filename: str):
     """
     return struct: [{"name": "SomeName", "id": "id...", num: 3}, ...]
     for sequence(s) in data
@@ -209,7 +220,7 @@ def get_sequence(seq, zip_file, filename):
     return ret
 
 
-def get_lang(lng):
+def get_lang(lng: typing.Union[str, list[str]]) -> str:
     """return lang id(s) string"""
     ret = ""
     rets = {}
@@ -222,7 +233,7 @@ def get_lang(lng):
     return ret
 
 
-def get_struct_by_key(key, struct):
+def get_struct_by_key(key: str, struct):  # FixMe types
     """ret substr by key"""
     if key in struct:
         return struct[key]
@@ -239,7 +250,7 @@ def get_struct_by_key(key, struct):
     return None
 
 
-def get_replace_list(zip_file):
+def get_replace_list(zip_file: str):  # FixMe types
     """return None or struct from .zip.replace"""
     ret = None
     replace_list = zip_file + ".replace"
@@ -253,7 +264,7 @@ def get_replace_list(zip_file):
     return ret
 
 
-def replace_book(filename, book, replace_data):
+def replace_book(filename: str, book, replace_data):  # FixMe types
     """get book struct, if exists replacement, replace some fields from it"""
     # filename = book["filename"]
     if filename in replace_data:
@@ -263,7 +274,7 @@ def replace_book(filename, book, replace_data):
     return book
 
 
-def get_title(title):
+def get_title(title: typing.Union[str, dict[str, str]]) -> str:
     """get stripped title from struct"""
     if isinstance(title, str):
         return title.replace('«', '"').replace('»', '"')
@@ -275,7 +286,7 @@ def get_title(title):
     return str(title).replace('«', '"').replace('»', '"')
 
 
-def array2string(arr):
+def array2string(arr: typing.Optional[list[str]]=None) -> typing.Optional[str]:
     """array of any to string"""
     ret = []
     if arr is None:
@@ -286,7 +297,7 @@ def array2string(arr):
     return "".join(ret)
 
 
-def get_pub_info(pubinfo):
+def get_pub_info(pubinfo) -> typing.Tuple[typing.Optional[str], typing.Optional[str], typing.Optional[str]]:  # FixMe types
     """get publishing vars from pubinfo"""
     isbn = None
     year = None
@@ -318,6 +329,7 @@ def get_pub_info(pubinfo):
     return isbn, year, publisher
 
 
+# FixMe types
 def get_image(name: str, binary, last=True, context=None):  # pylint: disable=R0912,R0914
     """
     return {"content-type": "image/jpeg", "data": "<image data in jpeg>"}
@@ -370,7 +382,7 @@ def get_image(name: str, binary, last=True, context=None):  # pylint: disable=R0
     return ret
 
 
-def get_fb2data(fb2_fd, zip_file, filename):
+def get_fb2data(fb2_fd, zip_file, filename):  # FixMe types
     """return FictionBook section from opened file fb2_fd"""
     sys.setrecursionlimit(10000)  # for some strange fb2 with nested <p>
     b_soap = BeautifulSoup(bytes(fb2_fd.read()), 'xml')
@@ -389,6 +401,7 @@ def get_fb2data(fb2_fd, zip_file, filename):
     return fb2data
 
 
+# FixMe types
 def fb2parse(z_file, filename, replace_data, inpx_data):  # pylint: disable=R0912,R0914,R0915
     """get filename in opened zip (assume filename format as fb2), return book struct"""
 
