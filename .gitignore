@@ -4,6 +4,7 @@ run_sqlite.sh
 genres_unknown
 tmp
 __pycache__
+.mypy_cache
 data
 pgdata
 LOG*
