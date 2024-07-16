@@ -18,7 +18,7 @@ from .inpx import get_inpx_meta
 INPX = "flibusta_fb2_local.inpx"  # filename of metadata indexes zip
 
 
-def recalc_commit(db):  # pylint: disable=C0103
+def recalc_commit(db) -> None:  # pylint: disable=C0103
     """precalc some counts in database"""
     logging.info("recalc stored counts...")
     db.recalc_authors_books()
@@ -28,7 +28,7 @@ def recalc_commit(db):  # pylint: disable=C0103
     logging.info("end")
 
 
-def create_booklist(inpx_data, zip_file):  # pylint: disable=C0103
+def create_booklist(inpx_data, zip_file) -> None:  # pylint: disable=C0103
     """(re)create .list from .zip"""
 
     booklist = zip_file + ".list"
@@ -63,7 +63,7 @@ def create_booklist(inpx_data, zip_file):  # pylint: disable=C0103
         sys.exit(1)
 
 
-def update_booklist(inpx_data, zip_file):  # pylint: disable=C0103
+def update_booklist(inpx_data, zip_file) -> bool:  # pylint: disable=C0103
     """(re)create .list for new or updated .zip"""
 
     booklist = zip_file + ".list"
@@ -90,7 +90,7 @@ def update_booklist(inpx_data, zip_file):  # pylint: disable=C0103
     return True
 
 
-def list_zip(zip_file):
+def list_zip(zip_file) -> list[str]:
     """return list of files in zip_file"""
     ret = []
     z_file = zipfile.ZipFile(zip_file)  # pylint: disable=R1732
@@ -100,7 +100,7 @@ def list_zip(zip_file):
     return ret
 
 
-def ziplist(inpx_data, zip_file):
+def ziplist(inpx_data, zip_file: str):
     """iterate over files in zip, return array of book struct"""
 
     logging.info(zip_file)
