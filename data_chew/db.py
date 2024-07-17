@@ -95,7 +95,7 @@ class BookDB():
         self.__get_genres()
         self.__get_genres_replace()
         self.__get_langs_replace()
-        logging.info("genres data loaded to vars")
+        logging.debug("genres data loaded to vars")
 
     def __get_genres_meta(self):
         """init genres meta dict"""
@@ -228,19 +228,15 @@ class BookDB():
         else:
             self.__add_genre(genre)
 
-    def get_authors_cnt(self):
-        req = GET_REQ["get_authors_cnt"]
-        self.cur.execute(req)
-        data = self.cur.fetchone()[0]
-        return data
-
     def get_data(self, reqidx):
+        """get data by some request"""
         req = GET_REQ[reqidx]
         self.cur.execute(req)
         data = self.cur.fetchall()
         return data
 
     def get_data_par1(self, reqidx, par1):
+        """get data by some request with one param"""
         req = GET_REQ[reqidx] % par1
         self.cur.execute(req)
         data = self.cur.fetchall()

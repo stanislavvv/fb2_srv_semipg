@@ -538,8 +538,8 @@ def fb2parse(z_file, filename, replace_data, inpx_data):  # pylint: disable=R091
     return book_id, out
 
 
-# return [{"name": "...", "id": "...", "cnt": 1}, ...]
 def seqs_in_data(data):
+    """return [{"name": "...", "id": "...", "cnt": 1}, ...]"""
     ret = []
     seq_idx = {}
     for book in data:
@@ -562,8 +562,8 @@ def seqs_in_data(data):
     return ret
 
 
-# return books_id[] without sequences
 def nonseq_from_data(data):
+    """return books_id[] without sequences"""
     ret = []
     for book in data:
         if book["sequences"] is None:

@@ -177,5 +177,19 @@ GET_REQ = {
     """,
     "get_authors": """
         SELECT id, name FROM authors WHERE upper(substring(name, 1, 3)) = '%s';
+    """,
+    "get_seqs_cnt": """
+        SELECT count(*) FROM sequences;
+    """,
+    "get_seqs_one": """
+        SELECT upper(substring(name, 1, 1)) as name1 FROM sequences GROUP BY name1;
+    """,
+    "get_seqs_three": """
+        SELECT upper(substring(name, 1, 3)) as name3, count(*) as cnt
+        FROM sequences
+        WHERE upper(substring(name, 1, 1)) = '%s' GROUP BY name3;    """,
+    "get_seqs": """
+        SELECT id, name FROM sequences
+        WHERE upper(substring(sequences.name, 1, 3)) = '%s' GROUP BY id, name;
     """
 }
