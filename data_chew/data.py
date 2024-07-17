@@ -98,7 +98,7 @@ def get_genre(
     return ret
 
 
-def get_author_struct(author):  #FixMe types
+def get_author_struct(author):  # FixMe types
     """return [{"name": "Name", "id": "id"}, ...] for author(s)"""
     # pylint: disable=R0912
     ret = [{"name": '--- unknown ---', "id": make_id('--- unknown ---')}]  # default

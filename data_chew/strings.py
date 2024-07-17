@@ -63,3 +63,17 @@ def quote_string(string: str, errors: str="strict") -> str:
 
     # OLD return "\"" + encodable.replace("\"", "\"\"") + "\""
     return encodable.replace("\'", "\'\'")
+
+
+def id2path(id: str):
+    """1a2b3c.... to 1a/2b/1a2b3c..."""
+    first = id[:2]
+    second = id[2:4]
+    return first + "/" + second + "/" + id
+
+
+def id2pathonly(id: str):
+    """1a2b3c.... to 1a/2b"""
+    first = id[:2]
+    second = id[2:4]
+    return first + "/" + second

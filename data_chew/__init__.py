@@ -5,27 +5,19 @@
 import os
 import sys
 import zipfile
-# import glob
+import glob
 import json
 import logging
+
+
 
 # pylint can't import local's
 # pylint: disable=E0401
 from .data import get_replace_list, fb2parse
-
 from .inpx import get_inpx_meta
+from .idx import process_list_books_batch_db
 
 INPX = "flibusta_fb2_local.inpx"  # filename of metadata indexes zip
-
-
-def recalc_commit(db) -> None:  # pylint: disable=C0103
-    """precalc some counts in database"""
-    logging.info("recalc stored counts...")
-    db.recalc_authors_books()
-    db.recalc_seqs_books()
-    db.recalc_genres_books()
-    db.commit()
-    logging.info("end")
 
 
 def create_booklist(inpx_data, zip_file) -> None:  # pylint: disable=C0103
@@ -114,3 +106,44 @@ def ziplist(inpx_data, zip_file: str):
             _, res = fb2parse(z_file, filename, replace_data, inpx_data)
             ret.append(res)
     return ret
+
+
+def process_lists_db(db, zipdir, stage, hide_deleted=False):  # pylint: disable=C0103
+    """process .list's to database"""
+
+    if stage in ("fillonly", "fillall"):
+        print("begin stage %s" % stage)
+        try:
+            db.create_tables()
+            i = 0
+        except Exception as ex:  # pylint: disable=W0703
+            db.conn.rollback()
+            logging.error("table creation exception:")
+            logging.error(ex)
+            return False
+        for booklist in sorted(glob.glob(zipdir + '/*.zip.list') + glob.glob(zipdir + '/*.zip.list.gz')):
+            logging.info("[%s] %s", str(i), booklist)
+            process_list_books_batch_db(db, booklist, stage, hide_deleted)
+            i = i + 1
+
+        try:
+            db.commit()
+        except Exception as ex:  # pylint: disable=W0703
+            db.conn.rollback()
+            logging.error("db commit exception:")
+            logging.error(ex)
+            return False
+
+    elif stage == "newonly":
+        logging.error("NOT IMPLEMENTED")
+    else:
+        logging.error("unknown stage: %s" % stage)
+
+    # try:
+        # # recalc counts and commit
+        # recalc_commit(db)
+    # except Exception as ex:  # pylint: disable=W0703
+        # db.conn.rollback()
+        # logging.error(ex)
+        # return False
+    return True
