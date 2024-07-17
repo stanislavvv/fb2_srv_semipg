@@ -31,6 +31,7 @@ def usage():
     print(" stage[1-4]  -- stage1, ..., stage4 for creating static pages")
     print("full data processing: `for i in new_lists fillonly stage1 stage2 stage3 stage4; do ./datachew.py $i; done`")
 
+
 def clean():
     """clean index data"""
 
@@ -73,13 +74,11 @@ def fromlists(stage):
         pagesdir = app.config['STATIC']
         process_lists(db, zipdir, pagesdir, stage)
     else:
-        #try:
-        process_lists_db(db, zipdir, str(stage), hide_deleted=hide_deleted)
-        # except Exception as ex:  # pylint: disable=broad-except
-            # # logging.error(ex)
-            # # logging.error("data rollbacked")
-            # print(ex)
-            # print("data rollbacked")
+        try:
+            process_lists_db(db, zipdir, str(stage), hide_deleted=hide_deleted)
+        except Exception as ex:  # pylint: disable=broad-except
+            logging.error(ex)
+            logging.error("data rollbacked")
     db.conn.close()
 
 

@@ -8,17 +8,21 @@ export FLASK_ENV=prod
 help:
 	@echo "Run \`make <target>'"
 	@echo "Available targets:"
-	@echo "  clean    - clean all"
-	@echo "  flakeall - check all .py by flake8"
-	@echo "  lintall  - check all .py by pylint"
-	@echo "  help     - this text"
-	@echo "  update   - update data from .zip"
+	@echo "  clean     - clean all"
+	@echo "  cleandata - remove static pages"
+	@echo "  flakeall  - check all .py by flake8"
+	@echo "  lintall   - check all .py by pylint"
+	@echo "  help      - this text"
+	@echo "  update    - update data from .zip"
 
 clean:
 	find . -name '*.pyc' -delete
 	find . -name '__pycache__' -delete
 	find . -name '.mypy_cache' -print0 | xargs -0 -n1 rm -rf
 	rm -rf venv
+
+cleandata:
+	rm -rf data/pages
 
 flakeall:
 	find . -not -path "./venv/*" -not -path "./tmp/*" -name '*.py' -print0 | xargs -0 -n 100 flake8 $(FLAKE8_ARGS)

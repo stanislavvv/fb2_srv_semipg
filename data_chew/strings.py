@@ -6,7 +6,7 @@ import unicodedata as ud
 import typing
 
 
-def strnull(string: typing.Optional[str]=None) -> str:
+def strnull(string: typing.Optional[str] = None) -> str:
     """return empty string if None, else return content"""
     if string is None:
         return ""
@@ -46,7 +46,7 @@ def strip_quotes(string: str) -> str:
     return string
 
 
-def quote_string(string: str, errors: str="strict") -> str:
+def quote_string(string: str, errors: str = "strict") -> str:
     """quote string for sql"""
     if string is None:
         return None

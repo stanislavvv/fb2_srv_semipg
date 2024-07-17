@@ -286,7 +286,7 @@ def get_title(title: typing.Union[str, dict[str, str]]) -> str:
     return str(title).replace('«', '"').replace('»', '"')
 
 
-def array2string(arr: typing.Optional[list[str]]=None) -> typing.Optional[str]:
+def array2string(arr: typing.Optional[list[str]] = None) -> typing.Optional[str]:
     """array of any to string"""
     ret = []
     if arr is None:
@@ -297,7 +297,8 @@ def array2string(arr: typing.Optional[list[str]]=None) -> typing.Optional[str]:
     return "".join(ret)
 
 
-def get_pub_info(pubinfo) -> typing.Tuple[typing.Optional[str], typing.Optional[str], typing.Optional[str]]:  # FixMe types
+def get_pub_info(pubinfo) -> typing.Tuple[typing.Optional[str], typing.Optional[str], typing.Optional[str]]:
+    # FixMe types
     """get publishing vars from pubinfo"""
     isbn = None
     year = None
@@ -535,3 +536,42 @@ def fb2parse(z_file, filename, replace_data, inpx_data):  # pylint: disable=R091
         "deleted": info["deleted"]
     }
     return book_id, out
+
+
+# return [{"name": "...", "id": "...", "cnt": 1}, ...]
+def seqs_in_data(data):
+    ret = []
+    seq_idx = {}
+    for book in data:
+        if book["sequences"] is not None:
+            for seq in book["sequences"]:
+                seq_id = seq.get("id")
+                if seq_id is not None:
+                    seq_name = seq["name"]
+                    if seq_id in seq_idx:
+                        s = seq_idx[seq_id]
+                        count = s["cnt"]
+                        count = count + 1
+                        s["cnt"] = count
+                        seq_idx[seq_id] = s
+                    else:
+                        s = {"name": seq_name, "id": seq_id, "cnt": 1}
+                        seq_idx[seq_id] = s
+    for seq in seq_idx:
+        ret.append(seq_idx[seq])
+    return ret
+
+
+# return books_id[] without sequences
+def nonseq_from_data(data):
+    ret = []
+    for book in data:
+        if book["sequences"] is None:
+            book_id = book["book_id"]
+            ret.append(book_id)
+    return ret
+
+
+def strip_book(book):
+    """strip images and some other data from books info"""
+    return book

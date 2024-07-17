@@ -9,8 +9,6 @@ import glob
 import json
 import logging
 
-
-
 # pylint can't import local's
 # pylint: disable=E0401
 from .data import get_replace_list, fb2parse

@@ -115,7 +115,7 @@ def get_line_fields(line: str):
         return None, None
 
 
-def get_inpx_meta(inpx_data, zip_file):  #FixMe types
+def get_inpx_meta(inpx_data, zip_file):  # FixMe types
     """retrieve data from entire .inpx file"""
     ret = {}
     inp_file = os.path.basename(zip_file).replace(".zip", ".inp")
