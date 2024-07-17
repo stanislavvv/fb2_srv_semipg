@@ -318,7 +318,7 @@ def get_author_name(auth_id: str):
 
 
 def get_meta_name(meta_id):
-    """author name by id"""
+    """meta name by id"""
     ret = meta_id
     db_conn = dbconnect()
     dbdata = db_conn.get_meta_name(meta_id)
@@ -347,76 +347,76 @@ def get_seq_name(seq_id: str):
     return db_conn.get_seq_name(seq_id)
 
 
-def get_book_authors(book_id: str):
-    """one book authors"""
-    ret = []
-    try:
-        db_conn = dbconnect()
-        dbdata = db_conn.get_book_authors(book_id)
-        for auth in dbdata:
-            ret.append({
-                "id": auth[0],
-                "name": auth[1]
-            })
-    except Exception as ex:  # pylint: disable=W0703
-        logging.error(ex)
-    return ret
+# def get_book_authors(book_id: str):
+    # """one book authors"""
+    # ret = []
+    # try:
+        # db_conn = dbconnect()
+        # dbdata = db_conn.get_book_authors(book_id)
+        # for auth in dbdata:
+            # ret.append({
+                # "id": auth[0],
+                # "name": auth[1]
+            # })
+    # except Exception as ex:  # pylint: disable=W0703
+        # logging.error(ex)
+    # return ret
 
 
-def get_books_authors(book_ids):
-    """books authors"""
-    ret = {}
-    try:
-        db_conn = dbconnect()
-        dbdata = db_conn.get_books_authors(book_ids)
-        for auth in dbdata:
-            book_id = auth[0]
-            if book_id not in ret:
-                ret[book_id] = []
-            ret[book_id].append({
-                "id": auth[1],
-                "name": auth[2]
-            })
-    except Exception as ex:  # pylint: disable=W0703
-        logging.error(ex)
-    return ret
+# def get_books_authors(book_ids):
+    # """books authors"""
+    # ret = {}
+    # try:
+        # db_conn = dbconnect()
+        # dbdata = db_conn.get_books_authors(book_ids)
+        # for auth in dbdata:
+            # book_id = auth[0]
+            # if book_id not in ret:
+                # ret[book_id] = []
+            # ret[book_id].append({
+                # "id": auth[1],
+                # "name": auth[2]
+            # })
+    # except Exception as ex:  # pylint: disable=W0703
+        # logging.error(ex)
+    # return ret
 
 
-def get_book_seqs(book_id: str):
-    """one book sequences"""
-    ret = []
-    try:
-        db_conn = dbconnect()
-        dbdata = db_conn.get_book_seqs(book_id)
-        for seq in dbdata:
-            ret.append({
-                "id": seq[0],
-                "name": seq[1],
-                "num": seq[2]
-            })
-    except Exception as ex:  # pylint: disable=W0703
-        logging.error(ex)
-    return ret
+# def get_book_seqs(book_id: str):
+    # """one book sequences"""
+    # ret = []
+    # try:
+        # db_conn = dbconnect()
+        # dbdata = db_conn.get_book_seqs(book_id)
+        # for seq in dbdata:
+            # ret.append({
+                # "id": seq[0],
+                # "name": seq[1],
+                # "num": seq[2]
+            # })
+    # except Exception as ex:  # pylint: disable=W0703
+        # logging.error(ex)
+    # return ret
 
 
-def get_books_seqs(book_ids):
-    """books sequences"""
-    ret = {}
-    try:
-        db_conn = dbconnect()
-        dbdata = db_conn.get_books_seqs(book_ids)
-        for seq in dbdata:
-            book_id = seq[0]
-            if book_id not in ret:
-                ret[book_id] = []
-            ret[book_id].append({
-                "id": seq[1],
-                "name": seq[2],
-                "num": seq[3]
-            })
-    except Exception as ex:  # pylint: disable=W0703
-        logging.error(ex)
-    return ret
+# def get_books_seqs(book_ids):
+    # """books sequences"""
+    # ret = {}
+    # try:
+        # db_conn = dbconnect()
+        # dbdata = db_conn.get_books_seqs(book_ids)
+        # for seq in dbdata:
+            # book_id = seq[0]
+            # if book_id not in ret:
+                # ret[book_id] = []
+            # ret[book_id].append({
+                # "id": seq[1],
+                # "name": seq[2],
+                # "num": seq[3]
+            # })
+    # except Exception as ex:  # pylint: disable=W0703
+        # logging.error(ex)
+    # return ret
 
 
 def get_book_descr(book_id: str):
