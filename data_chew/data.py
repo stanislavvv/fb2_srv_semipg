@@ -574,4 +574,6 @@ def nonseq_from_data(data):
 
 def strip_book(book):
     """strip images and some other data from books info"""
+    if "cover" in book:
+        del book["cover"]
     return book

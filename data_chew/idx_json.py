@@ -16,14 +16,10 @@ MAX_PASS_LENGTH_GEN = 5
 
 auth_processed = {}
 
-# pylint: disable=C0103
-auth_cnt = 0
-
 
 def process_lists(db, zipdir, pagesdir, stage, hide_deleted=False):
     """process .list's for static pages"""
-    global auth_cnt
-    logging.debug("process_lists: %s, %s, %s", zipdir, pagesdir, stage)
+
     if stage == "global":
         make_global_indexes(db, zipdir, pagesdir)
     elif stage == "authors":
@@ -51,7 +47,8 @@ def process_lists(db, zipdir, pagesdir, stage, hide_deleted=False):
             # make_gen_data(pagesdir)
             # logging.debug(" - processed genres: %d/%d" % (len(gen_processed), gen_cnt))
         # make_gen_subindexes(pagesdir)
-
+    else:
+        logging.error("Unknow stage")
 
 def make_global_indexes(db, zipdir, pagesdir):
     Path(pagesdir).mkdir(parents=True, exist_ok=True)
@@ -100,14 +97,16 @@ def make_auth_data(db, zipdir, pagesdir, hide_deleted=False):
                 book = json.loads(b)
                 if hide_deleted and "deleted" in book and book["deleted"] != 0:
                     continue
+                book = strip_book(book)
                 if book["authors"] is not None:
+                    book = strip_book(book)
                     for auth in book["authors"]:
                         auth_id = auth.get("id")
                         auth_name = auth.get("name")
                         if auth_id not in auth_processed:
                             if auth_id in auth_data:
                                 s = auth_data[auth_id]["books"]
-                                s.append(strip_book(book))
+                                s.append(book)
                                 auth_data[auth_id]["books"] = s
                             elif len(auth_data) < MAX_PASS_LENGTH:
                                 s = {"name": auth_name, "id": auth_id}
@@ -117,11 +116,28 @@ def make_auth_data(db, zipdir, pagesdir, hide_deleted=False):
                                 auth_data[auth_id] = s
     for auth_id in auth_data:
         data = auth_data[auth_id]
-        data["sequences"] = seqs_in_data(auth_data[auth_id]["books"])
-        data["nonseq_book_ids"] = nonseq_from_data(auth_data[auth_id]["books"])
-        workdir = pagesdir + "/author/" + id2pathonly(auth_id)
-        workfile = pagesdir + "/author/" + id2path(auth_id) + ".json"
+
+        workdir = pagesdir + "/author/" + id2path(auth_id)
         Path(workdir).mkdir(parents=True, exist_ok=True)
+
+        allbooks = data["books"]
+        workfile = workdir + "/all.json"
         with open(workfile, 'w') as idx:
-            json.dump(data, idx, indent=2, ensure_ascii=False)
+            json.dump(allbooks, idx, indent=2, ensure_ascii=False)
+
+        seqs = seqs_in_data(auth_data[auth_id]["books"])
+        workfile = workdir + "/sequences.json"
+        with open(workfile, 'w') as idx:
+            json.dump(seqs, idx, indent=2, ensure_ascii=False)
+
+        nonseqs = nonseq_from_data(auth_data[auth_id]["books"])
+        workfile = workdir + "/sequenceless.json"
+        with open(workfile, 'w') as idx:
+            json.dump(nonseqs, idx, indent=2, ensure_ascii=False)
+
+        main = data
+        del main["books"]
+        workfile = workdir + "/index.json"
+        with open(workfile, 'w') as idx:
+            json.dump(main, idx, indent=2, ensure_ascii=False)
         auth_processed[auth_id] = 1
