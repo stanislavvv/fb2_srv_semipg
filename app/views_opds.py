@@ -8,7 +8,7 @@ import xmltodict
 # pylint: disable=E0402,R0801,C0209
 from .consts import URL
 
-from .views_internals import view_main, view_auth_root
+from .views_internals import view_main, view_auth_root, view_auth_sub
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -37,14 +37,14 @@ def opds_auth_root():
     return resp
 
 
-# @opds.route(URL["authidx"] + "<sub>", methods=['GET'])
-# def opds_auth_sub(sub):
-    # """three-letters links to lists or lists of authors"""
-    # data = view_auth_sub(sub)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["authidx"] + "<sub>", methods=['GET'])
+def opds_auth_sub(sub):
+    """three-letters links to lists or lists of authors"""
+    data = view_auth_sub(sub)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>", methods=['GET'])
