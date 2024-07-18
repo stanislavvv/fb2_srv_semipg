@@ -174,4 +174,3 @@ def view_author_nonseq(sub1, sub2, auth_id):
         "layout": "sequenceless"
     }
     return auth_books(params)
-

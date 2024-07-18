@@ -221,7 +221,6 @@ def make_seq_entry(seq, dtiso, subtag, authref, baseref, layout=None):
     return ret
 
 
-
 def make_book_entry(book, dtiso, authref, seqref, seq_id=None):
     approot = current_app.config['APPLICATION_ROOT']
     # rootdir = current_app.config['STATIC']
@@ -303,28 +302,6 @@ def make_book_entry(book, dtiso, authref, seqref, seq_id=None):
         }
     }
     return ret
-
-
-# def get_book_link(approot: str, zipfile: str, filename: str, ctype: str):
-    # """create download/read link for opds"""
-    # title = "Читать онлайн"
-    # book_ctype = "text/html"
-    # rel = "alternate"
-    # if zipfile.endswith('zip'):
-        # zipfile = zipfile[:-4]
-    # href = approot + URL["read"] + zipfile + "/" + url_str(filename)
-    # if ctype == 'dl':
-        # title = "Скачать"
-        # book_ctype = "application/fb2+zip"
-        # rel = "http://opds-spec.org/acquisition/open-access"
-        # href = approot + URL["dl"] + zipfile + "/" + url_str(filename) + ".zip"
-    # ret = {
-        # "@href": href,
-        # "@rel": rel,
-        # "@title": title,
-        # "@type": book_ctype
-    # }
-    # return ret
 
 
 def get_seq_link(approot: str, seqref: str, seq_id: str, seq_name: str):
