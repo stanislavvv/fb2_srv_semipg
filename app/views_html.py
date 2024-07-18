@@ -6,7 +6,7 @@ from flask import Blueprint, Response, render_template, redirect, url_for
 # pylint: disable=E0402,C0209
 from .internals import URL
 
-from .views_internals import view_main, view_auth_root, view_auth_sub
+from .views_internals import view_main, view_auth_root, view_auth_sub, view_author
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -65,18 +65,18 @@ def html_auth_sub(sub):
     return resp
 
 
-# @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>", methods=['GET'])
-# def html_author(sub1, sub2, auth_id):
-    # """author main page"""
-    # data = view_author(sub1, sub2, auth_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_author_main.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>", methods=['GET'])
+def html_author(sub1, sub2, auth_id):
+    """author main page"""
+    data = view_author(sub1, sub2, auth_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_author_main.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/sequences", methods=['GET'])

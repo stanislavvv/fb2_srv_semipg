@@ -43,7 +43,7 @@ def validate_id(string: str):
 
 def validate_prefix(string: str):
     """simple prefix validation in .../sequenceindes and .../authorsindex"""
-    ret = string.replace('"', '`').replace("'", '`')  # no "' quotes in database
+    ret = string   # .replace('"', '`').replace("'", '`')  # no "' quotes in database
     if len(ret) > 10:
         return None
     return ret

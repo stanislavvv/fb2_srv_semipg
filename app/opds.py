@@ -105,7 +105,7 @@ def strnum_list(params):
     idx = params["self"]
     baseref = params["baseref"]
     title = params["title"]
-    subtitle = params["subtitle"]
+    # subtitle = params["subtitle"]
     tag = params["tag"]
     subtag = params["subtag"]
     self = params["self"]
@@ -172,6 +172,113 @@ def strnum_list(params):
                 }
             }
         )
+    return ret
+
+
+def auth_main(params):
+    """main page for author"""
+    dtiso = get_dtiso()
+    approot = current_app.config['APPLICATION_ROOT']
+    rootdir = current_app.config['STATIC']
+    self = params["self"]
+    idx = self.replace("/opds", "")
+    # baseref = params["baseref"]
+    title = params["title"]
+    # subtitle = params["subtitle"]
+    tag = params["tag"]
+    # subtag = params["subtag"]
+    self = params["self"]
+    upref = params["upref"]
+    auth_id = params["id"]
+
+    workfile = rootdir + "/" + idx + "/index.json"
+    try:
+        with open(workfile) as nm:
+            auth_data = json.load(nm)
+            auth_name = "'" + auth_data["name"] + "'"
+    except Exception as e:
+        print(e)
+        auth_name = ""
+    ret = ret_hdr()
+    ret["feed"]["updated"] = dtiso
+    ret["feed"]["title"] = title + auth_name
+    ret["feed"]["id"] = tag
+    ret["feed"]["link"].append(
+        {
+            "@href": approot + self,
+            "@rel": "self",
+            "@type": "application/atom+xml;profile=opds-catalog"
+        }
+    )
+    ret["feed"]["link"].append(
+        {
+            "@href": approot + upref,
+            "@rel": "up",
+            "@type": "application/atom+xml;profile=opds-catalog"
+        }
+    )
+    ret["feed"]["entry"] = [
+                {
+                    "updated": dtiso,
+                    "id": "tag:author:bio:" + auth_id,
+                    "title": "Об авторе",
+                    "link": [
+                        {
+                            "@href": approot + URL["author"] + id2path(auth_id) + "/sequences",
+                            "@rel": "http://www.feedbooks.com/opds/facet",
+                            "@title": "Books of author by sequences",
+                            "@type": "application/atom+xml;profile=opds-catalog"
+                        },
+                        {
+                            "@href": approot + URL["author"] + id2path(auth_id) + "/sequenceless",
+                            "@rel": "http://www.feedbooks.com/opds/facet",
+                            "@title": "Sequenceless books of author",
+                            "@type": "application/atom+xml;profile=opds-catalog"
+                        }
+                    ],
+                    "content": {
+                        "@type": "text/html",
+                        "#text": "<p><span style=\"font-weight:bold\">" + auth_name + "</span></p>"
+                    }
+                },
+                {
+                    "updated": dtiso,
+                    "id": "tag:author:" + auth_id + ":sequences",
+                    "title": "По сериям",
+                    "link": {
+                        "@href": approot + URL["author"] + id2path(auth_id) + "/sequences",
+                        "@type": "application/atom+xml;profile=opds-catalog"
+                    }
+                },
+                {
+                    "updated": dtiso,
+                    "id": "tag:author:" + auth_id + ":sequenceless",
+                    "title": "Вне серий",
+                    "link": {
+                        "@href": approot + URL["author"] + id2path(auth_id) + "/sequenceless",
+                        "@type": "application/atom+xml;profile=opds-catalog"
+                    }
+                },
+                {
+                    "updated": dtiso,
+                    "id": "tag:author:" + auth_id + ":alphabet",
+                    "title": "По алфавиту",
+                    "link": {
+                        "@href": approot + URL["author"] + id2path(auth_id) + "/alphabet",
+                        "@type": "application/atom+xml;profile=opds-catalog"
+                    }
+                },
+                {
+                    "updated": dtiso,
+                    "id": "tag:author:" + auth_id + ":time",
+                    "title": "По дате добавления",
+                    "link": {
+                        "@href": approot + URL["author"] + id2path(auth_id) + "/time",
+                        "@type": "application/atom+xml;profile=opds-catalog"
+                    }
+                }
+            ]
+
     return ret
 
 

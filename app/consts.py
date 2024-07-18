@@ -42,7 +42,8 @@ URL = {
 
 LANG = {
     "authors": "Авторы",
-    "auth_root_subtitle": "Авторы на "
+    "auth_root_subtitle": "Авторы на ",
+    "author": "Автор "
 }
 
 cover_names = [

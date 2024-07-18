@@ -8,7 +8,7 @@ import xmltodict
 # pylint: disable=E0402,R0801,C0209
 from .consts import URL
 
-from .views_internals import view_main, view_auth_root, view_auth_sub
+from .views_internals import view_main, view_auth_root, view_auth_sub, view_author
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -47,14 +47,14 @@ def opds_auth_sub(sub):
     return resp
 
 
-# @opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>", methods=['GET'])
-# def opds_author(sub1, sub2, auth_id):
-    # """author main page"""
-    # data = view_author(sub1, sub2, auth_id)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>", methods=['GET'])
+def opds_author(sub1, sub2, auth_id):
+    """author main page"""
+    data = view_author(sub1, sub2, auth_id)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/sequences", methods=['GET'])
