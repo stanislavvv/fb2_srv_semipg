@@ -8,7 +8,8 @@ from functools import cmp_to_key
 
 from .consts import URL
 from .internals import get_dtiso, id2path, custom_alphabet_book_title_cmp, unicode_upper
-from .opds import ret_hdr, add_link, make_book_entry
+from .internals import custom_alphabet_name_cmp
+from .opds import ret_hdr, add_link, make_book_entry, make_seq_entry
 
 
 def auth_main(params):
@@ -120,9 +121,10 @@ def auth_books(params):
     authref = params["authref"]
     seqref = params["seqref"]
     layout = params["layout"]
-    # auth_id = params["id"]
+    auth_id = params["id"]
 
-    workdir = rootdir + self.replace("/opds", "")
+    # workdir = rootdir + self.replace("/opds", "")
+    workdir = rootdir + URL["author"].replace("/opds", "") + id2path(auth_id)
     workfile = workdir + "/index.json"
     try:
         with open(workfile) as nm:
@@ -139,7 +141,10 @@ def auth_books(params):
     ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
     ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
 
-    workfile = workdir + "/all.json"
+    if layout == "sequences":
+        workfile = workdir + "/sequences.json"
+    else:
+        workfile = workdir + "/all.json"
     data = []
     try:
         with open(workfile) as nm:
@@ -147,10 +152,40 @@ def auth_books(params):
     except Exception as e:
         print(e)
         return ret
-    if layout == "alphabet":
-        data = sorted(data, key=cmp_to_key(custom_alphabet_book_title_cmp))
+
     if layout == "time":
         data = sorted(data, key=lambda s: unicode_upper(s["date_time"]))
+    elif layout == "alphabet":
+        data = sorted(data, key=cmp_to_key(custom_alphabet_book_title_cmp))
+
+    if layout == "sequenceless":
+        data_nonseq = []
+        for book in data:
+            if book["sequences"] is None:
+                data_nonseq.append(book)
+        data = data_nonseq
+
+    if layout == "sequences":
+        data = sorted(data, key=cmp_to_key(custom_alphabet_name_cmp))
+        baseref = upref
+        subtag = "tag:author:" + auth_id + ":sequence:"
+        for seq in data:
+            ret["feed"]["entry"].append(make_seq_entry(seq, dtiso, subtag, authref, baseref, layout="simple"))
+        return ret
+    elif layout == "sequence":
+        data_seq = []
+        seq_id = params["seq_id"]
+        for book in data:
+            if book["sequences"] is not None:
+                for s in book["sequences"]:
+                    if s.get("id") == seq_id:
+                        snum = s.get("num")
+                        if snum is not None:
+                            seq_num = int(snum)
+                        book["seq_num"] = seq_num
+                        data_seq.append(book)
+        data = sorted(data_seq, key=lambda s: s["seq_num"] or -1)
+
     for book in data:
         ret["feed"]["entry"].append(make_book_entry(book, dtiso, authref, seqref))
     return ret

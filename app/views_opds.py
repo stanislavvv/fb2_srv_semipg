@@ -9,7 +9,7 @@ import xmltodict
 from .consts import URL
 
 from .views_internals import view_main, view_auth_root, view_auth_sub, view_author, view_author_alphabet
-from .views_internals import view_author_time
+from .views_internals import view_author_time, view_author_seqs, view_author_seq, view_author_nonseq
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -58,34 +58,34 @@ def opds_author(sub1, sub2, auth_id):
     return resp
 
 
-# @opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/sequences", methods=['GET'])
-# def opds_author_seqs(sub1, sub2, auth_id):
-    # """sequences of author"""
-    # data = view_author_seqs(sub1, sub2, auth_id)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/sequences", methods=['GET'])
+def opds_author_seqs(sub1, sub2, auth_id):
+    """sequences of author"""
+    data = view_author_seqs(sub1, sub2, auth_id)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/<seq_id>", methods=['GET'])
-# def opds_author_seq(sub1, sub2, auth_id, seq_id):
-    # """book in sequence of author"""
-    # data = view_author_seq(sub1, sub2, auth_id, seq_id)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/<seq_id>", methods=['GET'])
+def opds_author_seq(sub1, sub2, auth_id, seq_id):
+    """book in sequence of author"""
+    data = view_author_seq(sub1, sub2, auth_id, seq_id)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/sequenceless", methods=['GET'])
-# def opds_author_nonseq(sub1, sub2, auth_id):
-    # """books of author not belong to any sequence"""
-    # data = view_author_nonseq(sub1, sub2, auth_id)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/sequenceless", methods=['GET'])
+def opds_author_nonseq(sub1, sub2, auth_id):
+    """books of author not belong to any sequence"""
+    data = view_author_nonseq(sub1, sub2, auth_id)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 @opds.route(URL["author"] + "<sub1>/<sub2>/<auth_id>/alphabet", methods=['GET'])

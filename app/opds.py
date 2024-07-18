@@ -9,14 +9,15 @@ import urllib
 from flask import current_app
 
 # pylint: disable=E0402,C0209
-from .internals import get_dtiso, id2path, html_refine, get_genre_name, sizeof_fmt, url_str
+from .internals import get_dtiso, id2path, html_refine, get_genre_name, sizeof_fmt
+from .internals import get_book_link
 # , get_book_entry, get_seq_link
 # from .internals import get_book_link, get_books_descr, get_books_authors
 # from .internals import get_books_seqs
 # from .internals import unicode_upper, pubinfo_anno
 # from .internals import custom_alphabet_sort, custom_alphabet_name_cmp, custom_alphabet_book_title_cmp
 from .internals import custom_alphabet_sort, pubinfo_anno
-from .consts import URL, OPDS
+from .consts import URL, OPDS, LANG
 
 # from .db import dbconnect, quote_string
 
@@ -122,21 +123,21 @@ def strnum_list(params):
     except Exception as e:
         print(e)
         return ret
-    data_sorted = sorted(data.items(), key=lambda x:x[1])
+    data_sorted = data  # use sort from datachew
     for d in data_sorted:
         if layout == "simple":
-            href = approot + baseref + urllib.parse.quote(d[0])
-            linetitle = d[0]
-            text = tpl % data[d[0]]
+            href = approot + baseref + urllib.parse.quote(d)
+            linetitle = d
+            text = tpl % data[d]
         else:
-            href = approot + baseref + urllib.parse.quote(id2path(d[0]))
-            linetitle = data[d[0]]
-            text = tpl % data[d[0]]
+            href = approot + baseref + urllib.parse.quote(id2path(d))
+            linetitle = data[d]
+            text = tpl % data[d]
 
         ret["feed"]["entry"].append(
             {
                 "updated": dtiso,
-                "id": subtag + urllib.parse.quote(d[0]),
+                "id": subtag + urllib.parse.quote(d),
                 "title": linetitle,
                 "content": {
                     "@type": "text",
@@ -190,6 +191,35 @@ def add_link(data, href, rel, typ):
         }
     )
     return data
+
+
+def make_seq_entry(seq, dtiso, subtag, authref, baseref, layout=None):
+    name = seq["name"]
+    id = seq["id"]
+    cnt = seq["cnt"]
+
+    tpl = LANG["books_num"]
+    approot = current_app.config['APPLICATION_ROOT']
+    if layout == "simple":
+        href = approot + baseref + "/" + urllib.parse.quote(id)
+    else:
+        href = approot + baseref + "/" + urllib.parse.quote(id2path(id))
+
+    ret = {
+        "updated": dtiso,
+        "id": subtag + urllib.parse.quote(id),
+        "title": name,
+        "content": {
+            "@type": "text",
+            "#text": tpl % cnt
+        },
+        "link": {
+            "@href": href,
+            "@type": "application/atom+xml;profile=opds-catalog"
+        }
+    }
+    return ret
+
 
 
 def make_book_entry(book, dtiso, authref, seqref, seq_id=None):
@@ -275,26 +305,26 @@ def make_book_entry(book, dtiso, authref, seqref, seq_id=None):
     return ret
 
 
-def get_book_link(approot: str, zipfile: str, filename: str, ctype: str):
-    """create download/read link for opds"""
-    title = "Читать онлайн"
-    book_ctype = "text/html"
-    rel = "alternate"
-    if zipfile.endswith('zip'):
-        zipfile = zipfile[:-4]
-    href = approot + URL["read"] + zipfile + "/" + url_str(filename)
-    if ctype == 'dl':
-        title = "Скачать"
-        book_ctype = "application/fb2+zip"
-        rel = "http://opds-spec.org/acquisition/open-access"
-        href = approot + URL["dl"] + zipfile + "/" + url_str(filename) + ".zip"
-    ret = {
-        "@href": href,
-        "@rel": rel,
-        "@title": title,
-        "@type": book_ctype
-    }
-    return ret
+# def get_book_link(approot: str, zipfile: str, filename: str, ctype: str):
+    # """create download/read link for opds"""
+    # title = "Читать онлайн"
+    # book_ctype = "text/html"
+    # rel = "alternate"
+    # if zipfile.endswith('zip'):
+        # zipfile = zipfile[:-4]
+    # href = approot + URL["read"] + zipfile + "/" + url_str(filename)
+    # if ctype == 'dl':
+        # title = "Скачать"
+        # book_ctype = "application/fb2+zip"
+        # rel = "http://opds-spec.org/acquisition/open-access"
+        # href = approot + URL["dl"] + zipfile + "/" + url_str(filename) + ".zip"
+    # ret = {
+        # "@href": href,
+        # "@rel": rel,
+        # "@title": title,
+        # "@type": book_ctype
+    # }
+    # return ret
 
 
 def get_seq_link(approot: str, seqref: str, seq_id: str, seq_name: str):

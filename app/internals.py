@@ -10,7 +10,7 @@ from functools import cmp_to_key
 from bs4 import BeautifulSoup
 
 # pylint: disable=E0402,R1705
-from .consts import URL, alphabet_1, alphabet_2
+from .consts import URL, LANG, alphabet_1, alphabet_2
 from .db import dbconnect
 
 # this is global, not constant
@@ -194,33 +194,33 @@ def id2path(any_id: str):
     return first + "/" + second + "/" + any_id
 
 
-# pylint: disable=R0913
-def get_book_entry(
-    date_time: str,
-    book_id: str,
-    book_title: str,
-    authors,
-    links,
-    category,
-    lang: str,
-    annotext: str
-):
-    """create book entry for opds"""
-    ret = {
-        "updated": date_time,
-        "id": "tag:book:" + book_id,
-        "title": book_title,
-        "author": authors,
-        "link": links,
-        "category": category,
-        "dc:language": lang,
-        "dc:format": "fb2",
-        "content": {
-            "@type": "text/html",
-            "#text": html_refine(annotext)
-        }
-    }
-    return ret
+# # pylint: disable=R0913
+# def get_book_entry(
+    # date_time: str,
+    # book_id: str,
+    # book_title: str,
+    # authors,
+    # links,
+    # category,
+    # lang: str,
+    # annotext: str
+# ):
+    # """create book entry for opds"""
+    # ret = {
+        # "updated": date_time,
+        # "id": "tag:book:" + book_id,
+        # "title": book_title,
+        # "author": authors,
+        # "link": links,
+        # "category": category,
+        # "dc:language": lang,
+        # "dc:format": "fb2",
+        # "content": {
+            # "@type": "text/html",
+            # "#text": html_refine(annotext)
+        # }
+    # }
+    # return ret
 
 
 # 123456 -> 123k, 1234567 -> 1.23M
@@ -244,17 +244,16 @@ def get_seq_link(approot: str, seqref: str, seq_id: str, seq_name: str):
     return ret
 
 
-# ctype == 'dl' for download
 def get_book_link(approot: str, zipfile: str, filename: str, ctype: str):
     """create download/read link for opds"""
-    title = "Читать онлайн"
+    title = LANG["book_read"]
     book_ctype = "text/html"
     rel = "alternate"
     if zipfile.endswith('zip'):
         zipfile = zipfile[:-4]
     href = approot + URL["read"] + zipfile + "/" + url_str(filename)
     if ctype == 'dl':
-        title = "Скачать"
+        title = LANG["book_dl"]
         book_ctype = "application/fb2+zip"
         rel = "http://opds-spec.org/acquisition/open-access"
         href = approot + URL["dl"] + zipfile + "/" + url_str(filename) + ".zip"

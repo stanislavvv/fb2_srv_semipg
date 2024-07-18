@@ -7,7 +7,7 @@ from flask import Blueprint, Response, render_template, redirect, url_for
 from .internals import URL
 
 from .views_internals import view_main, view_auth_root, view_auth_sub, view_author, view_author_alphabet
-from .views_internals import view_author_time
+from .views_internals import view_author_time, view_author_seqs, view_author_seq, view_author_nonseq
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -80,46 +80,46 @@ def html_author(sub1, sub2, auth_id):
     return resp
 
 
-# @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/sequences", methods=['GET'])
-# def html_author_seqs(sub1, sub2, auth_id):
-    # """sequences of author"""
-    # data = view_author_seqs(sub1, sub2, auth_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_list_linecnt.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/sequences", methods=['GET'])
+def html_author_seqs(sub1, sub2, auth_id):
+    """sequences of author"""
+    data = view_author_seqs(sub1, sub2, auth_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_list_linecnt.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/<seq_id>", methods=['GET'])
-# def html_author_seq(sub1, sub2, auth_id, seq_id):
-    # """book in sequence of author"""
-    # data = view_author_seq(sub1, sub2, auth_id, seq_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/<seq_id>", methods=['GET'])
+def html_author_seq(sub1, sub2, auth_id, seq_id):
+    """book in sequence of author"""
+    data = view_author_seq(sub1, sub2, auth_id, seq_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/sequenceless", methods=['GET'])
-# def html_author_nonseq(sub1, sub2, auth_id):
-    # """books of author not belong to any sequence"""
-    # data = view_author_nonseq(sub1, sub2, auth_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/sequenceless", methods=['GET'])
+def html_author_nonseq(sub1, sub2, auth_id):
+    """books of author not belong to any sequence"""
+    data = view_author_nonseq(sub1, sub2, auth_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/alphabet", methods=['GET'])

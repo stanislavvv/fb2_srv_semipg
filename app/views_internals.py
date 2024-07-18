@@ -51,12 +51,12 @@ def view_auth_sub(sub):
     if len(sub) >= 3:
         params["baseref"] = URL["author"]
         params["layout"] = "from_id"
-        params["tpl"] = "Автор '%s'"
+        params["tpl"] = LANG["author_tpl"]
         params["idxroot"] = sub[0]
     else:
         params["baseref"] = URL["authidx"]
         params["layout"] = "simple"
-        params["tpl"] = "%d авт"
+        params["tpl"] = LANG["authors_num"]
         params["idxroot"] = None
     return strnum_list(params)
 
@@ -88,9 +88,9 @@ def view_author_alphabet(sub1, sub2, auth_id):
         "sub1": sub1,
         "sub2": sub2,
         "id": auth_id,
-        "self": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
-        "upref": URL["authidx"],
-        "tag": "tag:root:author:" + auth_id,
+        "self": URL["author"] + "%s/%s/%s/alphabet" % (sub1, sub2, auth_id),
+        "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
+        "tag": "tag:root:author:" + auth_id + ":alphabet",
         "title": LANG["author"],
         "authref": URL["author"],
         "seqref": URL["seq"],
@@ -107,12 +107,71 @@ def view_author_time(sub1, sub2, auth_id):
         "sub1": sub1,
         "sub2": sub2,
         "id": auth_id,
-        "self": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
-        "upref": URL["authidx"],
-        "tag": "tag:root:author:" + auth_id,
+        "self": URL["author"] + "%s/%s/%s/time" % (sub1, sub2, auth_id),
+        "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
+        "tag": "tag:root:author:" + auth_id + ":time",
         "title": LANG["author"],
         "authref": URL["author"],
         "seqref": URL["seq"],
         "layout": "time"
     }
     return auth_books(params)
+
+
+def view_author_seqs(sub1, sub2, auth_id):
+    sub1 = validate_prefix(sub1)
+    sub2 = validate_prefix(sub2)
+    auth_id = validate_id(auth_id)
+    params = {
+        "sub1": sub1,
+        "sub2": sub2,
+        "id": auth_id,
+        "self": URL["author"] + "%s/%s/%s/sequences" % (sub1, sub2, auth_id),
+        "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
+        "tag": "tag:root:author:" + auth_id + ":sequences",
+        "title": LANG["author"],
+        "authref": URL["author"],
+        "seqref": URL["seq"],
+        "layout": "sequences"
+    }
+    return auth_books(params)
+
+
+def view_author_seq(sub1, sub2, auth_id, seq_id):
+    sub1 = validate_prefix(sub1)
+    sub2 = validate_prefix(sub2)
+    auth_id = validate_id(auth_id)
+    params = {
+        "sub1": sub1,
+        "sub2": sub2,
+        "id": auth_id,
+        "seq_id": seq_id,
+        "self": URL["author"] + "%s/%s/%s/%s" % (sub1, sub2, auth_id, seq_id),
+        "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
+        "tag": "tag:root:author:" + auth_id + ":sequence:" + seq_id,
+        "title": LANG["author"],
+        "authref": URL["author"],
+        "seqref": URL["seq"],
+        "layout": "sequence"
+    }
+    return auth_books(params)
+
+
+def view_author_nonseq(sub1, sub2, auth_id):
+    sub1 = validate_prefix(sub1)
+    sub2 = validate_prefix(sub2)
+    auth_id = validate_id(auth_id)
+    params = {
+        "sub1": sub1,
+        "sub2": sub2,
+        "id": auth_id,
+        "self": URL["author"] + "%s/%s/%s/sequences" % (sub1, sub2, auth_id),
+        "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
+        "tag": "tag:root:author:" + auth_id + ":sequences",
+        "title": LANG["author"],
+        "authref": URL["author"],
+        "seqref": URL["seq"],
+        "layout": "sequenceless"
+    }
+    return auth_books(params)
+
