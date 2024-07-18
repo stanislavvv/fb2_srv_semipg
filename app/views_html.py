@@ -6,7 +6,8 @@ from flask import Blueprint, Response, render_template, redirect, url_for
 # pylint: disable=E0402,C0209
 from .internals import URL
 
-from .views_internals import view_main, view_auth_root, view_auth_sub, view_author
+from .views_internals import view_main, view_auth_root, view_auth_sub, view_author, view_author_alphabet
+from .views_internals import view_author_time
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -121,32 +122,32 @@ def html_author(sub1, sub2, auth_id):
     # return resp
 
 
-# @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/alphabet", methods=['GET'])
-# def html_author_alphabet(sub1, sub2, auth_id):
-    # """all books of author order by book title"""
-    # data = view_author_alphabet(sub1, sub2, auth_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/alphabet", methods=['GET'])
+def html_author_alphabet(sub1, sub2, auth_id):
+    """all books of author order by book title"""
+    data = view_author_alphabet(sub1, sub2, auth_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/time", methods=['GET'])
-# def html_author_time(sub1, sub2, auth_id):
-    # """all books of author order by date"""
-    # data = view_author_time(sub1, sub2, auth_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["author"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<auth_id>/time", methods=['GET'])
+def html_author_time(sub1, sub2, auth_id):
+    """all books of author order by date"""
+    data = view_author_time(sub1, sub2, auth_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @html.route(URL["seqidx"].replace("/opds", "/html", 1), methods=['GET'])

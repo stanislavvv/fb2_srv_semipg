@@ -9,12 +9,13 @@ import urllib
 from flask import current_app
 
 # pylint: disable=E0402,C0209
-from .internals import get_dtiso, id2path  # , get_book_entry, sizeof_fmt, get_seq_link
-# from .internals import get_book_link, url_str, get_books_descr, get_books_authors
-# from .internals import get_books_seqs, get_genre_name
-# from .internals import unicode_upper, html_refine, pubinfo_anno
+from .internals import get_dtiso, id2path, html_refine, get_genre_name, sizeof_fmt, url_str
+# , get_book_entry, get_seq_link
+# from .internals import get_book_link, get_books_descr, get_books_authors
+# from .internals import get_books_seqs
+# from .internals import unicode_upper, pubinfo_anno
 # from .internals import custom_alphabet_sort, custom_alphabet_name_cmp, custom_alphabet_book_title_cmp
-from .internals import custom_alphabet_sort
+from .internals import custom_alphabet_sort, pubinfo_anno
 from .consts import URL, OPDS
 
 # from .db import dbconnect, quote_string
@@ -58,20 +59,9 @@ def str_list(params):
     ret["feed"]["updated"] = dtiso
     ret["feed"]["title"] = title
     ret["feed"]["id"] = tag
-    ret["feed"]["link"].append(
-        {
-            "@href": approot + self,
-            "@rel": "self",
-            "@type": "application/atom+xml;profile=opds-catalog"
-        }
-    )
-    ret["feed"]["link"].append(
-        {
-            "@href": approot + upref,
-            "@rel": "up",
-            "@type": "application/atom+xml;profile=opds-catalog"
-        }
-    )
+    ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
+    ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
+
     try:
         with open(workdir + "/index.json") as jsfile:
             data = json.load(jsfile)
@@ -116,21 +106,9 @@ def strnum_list(params):
     ret["feed"]["updated"] = dtiso
     ret["feed"]["title"] = title
     ret["feed"]["id"] = tag
-    ret["feed"]["link"].append(
-        {
-            "@href": approot + self,
-            "@rel": "self",
-            "@type": "application/atom+xml;profile=opds-catalog"
-        }
-    )
-    ret["feed"]["link"].append(
-        {
-            "@href": approot + upref,
-            "@rel": "up",
-            "@type": "application/atom+xml;profile=opds-catalog"
-        }
-    )
-    print(json.dumps(params, indent=2, ensure_ascii=False))
+    ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
+    ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
+
     if params["idxroot"] is not None:
         workdir = rootdir + upref.replace("/opds", "")
         workfile = workdir + params["idxroot"] + "/" + params["sub"] + ".json"
@@ -144,22 +122,21 @@ def strnum_list(params):
     except Exception as e:
         print(e)
         return ret
-    print(json.dumps(data, indent=2, ensure_ascii=False))
-    data_sorted = custom_alphabet_sort(data)
+    data_sorted = sorted(data.items(), key=lambda x:x[1])
     for d in data_sorted:
         if layout == "simple":
-            href = approot + baseref + urllib.parse.quote(d)
-            linetitle = d
-            text = tpl % data[d]
+            href = approot + baseref + urllib.parse.quote(d[0])
+            linetitle = d[0]
+            text = tpl % data[d[0]]
         else:
-            href = approot + baseref + urllib.parse.quote(id2path(d))
-            linetitle = data[d]
-            text = tpl % data[d]
+            href = approot + baseref + urllib.parse.quote(id2path(d[0]))
+            linetitle = data[d[0]]
+            text = tpl % data[d[0]]
 
         ret["feed"]["entry"].append(
             {
                 "updated": dtiso,
-                "id": subtag + urllib.parse.quote(d),
+                "id": subtag + urllib.parse.quote(d[0]),
                 "title": linetitle,
                 "content": {
                     "@type": "text",
@@ -172,113 +149,6 @@ def strnum_list(params):
                 }
             }
         )
-    return ret
-
-
-def auth_main(params):
-    """main page for author"""
-    dtiso = get_dtiso()
-    approot = current_app.config['APPLICATION_ROOT']
-    rootdir = current_app.config['STATIC']
-    self = params["self"]
-    idx = self.replace("/opds", "")
-    # baseref = params["baseref"]
-    title = params["title"]
-    # subtitle = params["subtitle"]
-    tag = params["tag"]
-    # subtag = params["subtag"]
-    self = params["self"]
-    upref = params["upref"]
-    auth_id = params["id"]
-
-    workfile = rootdir + "/" + idx + "/index.json"
-    try:
-        with open(workfile) as nm:
-            auth_data = json.load(nm)
-            auth_name = "'" + auth_data["name"] + "'"
-    except Exception as e:
-        print(e)
-        auth_name = ""
-    ret = ret_hdr()
-    ret["feed"]["updated"] = dtiso
-    ret["feed"]["title"] = title + auth_name
-    ret["feed"]["id"] = tag
-    ret["feed"]["link"].append(
-        {
-            "@href": approot + self,
-            "@rel": "self",
-            "@type": "application/atom+xml;profile=opds-catalog"
-        }
-    )
-    ret["feed"]["link"].append(
-        {
-            "@href": approot + upref,
-            "@rel": "up",
-            "@type": "application/atom+xml;profile=opds-catalog"
-        }
-    )
-    ret["feed"]["entry"] = [
-                {
-                    "updated": dtiso,
-                    "id": "tag:author:bio:" + auth_id,
-                    "title": "Об авторе",
-                    "link": [
-                        {
-                            "@href": approot + URL["author"] + id2path(auth_id) + "/sequences",
-                            "@rel": "http://www.feedbooks.com/opds/facet",
-                            "@title": "Books of author by sequences",
-                            "@type": "application/atom+xml;profile=opds-catalog"
-                        },
-                        {
-                            "@href": approot + URL["author"] + id2path(auth_id) + "/sequenceless",
-                            "@rel": "http://www.feedbooks.com/opds/facet",
-                            "@title": "Sequenceless books of author",
-                            "@type": "application/atom+xml;profile=opds-catalog"
-                        }
-                    ],
-                    "content": {
-                        "@type": "text/html",
-                        "#text": "<p><span style=\"font-weight:bold\">" + auth_name + "</span></p>"
-                    }
-                },
-                {
-                    "updated": dtiso,
-                    "id": "tag:author:" + auth_id + ":sequences",
-                    "title": "По сериям",
-                    "link": {
-                        "@href": approot + URL["author"] + id2path(auth_id) + "/sequences",
-                        "@type": "application/atom+xml;profile=opds-catalog"
-                    }
-                },
-                {
-                    "updated": dtiso,
-                    "id": "tag:author:" + auth_id + ":sequenceless",
-                    "title": "Вне серий",
-                    "link": {
-                        "@href": approot + URL["author"] + id2path(auth_id) + "/sequenceless",
-                        "@type": "application/atom+xml;profile=opds-catalog"
-                    }
-                },
-                {
-                    "updated": dtiso,
-                    "id": "tag:author:" + auth_id + ":alphabet",
-                    "title": "По алфавиту",
-                    "link": {
-                        "@href": approot + URL["author"] + id2path(auth_id) + "/alphabet",
-                        "@type": "application/atom+xml;profile=opds-catalog"
-                    }
-                },
-                {
-                    "updated": dtiso,
-                    "id": "tag:author:" + auth_id + ":time",
-                    "title": "По дате добавления",
-                    "link": {
-                        "@href": approot + URL["author"] + id2path(auth_id) + "/time",
-                        "@type": "application/atom+xml;profile=opds-catalog"
-                    }
-                }
-            ]
-
     return ret
 
 
@@ -309,3 +179,130 @@ def ret_hdr():  # python does not have constants
             "entry": []
         }
     }
+
+
+def add_link(data, href, rel, typ):
+    data["feed"]["link"].append(
+        {
+            "@href": href,
+            "@rel": rel,
+            "@type": typ
+        }
+    )
+    return data
+
+
+def make_book_entry(book, dtiso, authref, seqref, seq_id=None):
+    approot = current_app.config['APPLICATION_ROOT']
+    # rootdir = current_app.config['STATIC']
+    book_title = book["book_title"]
+    book_id = book["book_id"]
+    lang = book["lang"]
+    annotation = html_refine(book["annotation"])
+    size = int(book["size"])
+    date_time = book["date_time"]
+    zipfile = book["zipfile"]
+    filename = book["filename"]
+    genres = book["genres"]
+    pubinfo = ""
+    if "pub_info" in book and book["pub_info"] is not None:
+        pubinfo = pubinfo_anno(book["pub_info"])
+    authors = []
+    links = []
+    category = []
+    seq_name = ""
+    seq_num = ""
+    for author in book["authors"]:
+        authors.append(
+            {
+                "uri": approot + authref + id2path(author["id"]),
+                "name": author["name"]
+            }
+        )
+        links.append(
+            {
+                "@href": approot + authref + id2path(author["id"]),
+                "@rel": "related",
+                "@title": author["name"],
+                "@type": "application/atom+xml"
+            }
+        )
+    for gen in genres:
+        category.append(
+            {
+                "@label": get_genre_name(gen),
+                "@term": gen
+            }
+        )
+    if book["sequences"] is not None and book["sequences"] != '-':
+        for seq in book["sequences"]:
+            s_id = seq.get("id")
+            if s_id is not None:
+                links.append(get_seq_link(approot, seqref, id2path(s_id), seq["name"]))
+                if seq_id is not None and seq_id == s_id:
+                    seq_name = seq["name"]
+                    seq_num = seq.get("num")
+                    if seq_num is None:
+                        seq_num = "0"
+    links.append(get_book_link(approot, zipfile, filename, 'dl'))
+    links.append(get_book_link(approot, zipfile, filename, 'read'))
+
+    if seq_id is not None and seq_id != '':
+        annotext = """
+        <p class=\"book\"> %s </p>\n<br/>формат: fb2<br/>
+        размер: %s<br/>Серия: %s, номер: %s<br/>
+        """ % (annotation, sizeof_fmt(size), seq_name, seq_num)
+    else:
+        annotext = """
+        <p class=\"book\"> %s </p>\n<br/>формат: fb2<br/>
+        размер: %s<br/>
+        """ % (annotation, sizeof_fmt(size))
+    annotext = annotext + pubinfo
+    ret = {
+        "updated": date_time,
+        "id": "tag:book:" + book_id,
+        "title": book_title,
+        "author": authors,
+        "link": links,
+        "category": category,
+        "dc:language": lang,
+        "dc:format": "fb2",
+        "content": {
+            "@type": "text/html",
+            "#text": annotext
+        }
+    }
+    return ret
+
+
+def get_book_link(approot: str, zipfile: str, filename: str, ctype: str):
+    """create download/read link for opds"""
+    title = "Читать онлайн"
+    book_ctype = "text/html"
+    rel = "alternate"
+    if zipfile.endswith('zip'):
+        zipfile = zipfile[:-4]
+    href = approot + URL["read"] + zipfile + "/" + url_str(filename)
+    if ctype == 'dl':
+        title = "Скачать"
+        book_ctype = "application/fb2+zip"
+        rel = "http://opds-spec.org/acquisition/open-access"
+        href = approot + URL["dl"] + zipfile + "/" + url_str(filename) + ".zip"
+    ret = {
+        "@href": href,
+        "@rel": rel,
+        "@title": title,
+        "@type": book_ctype
+    }
+    return ret
+
+
+def get_seq_link(approot: str, seqref: str, seq_id: str, seq_name: str):
+    """create sequence link for opds"""
+    ret = {
+        "@href": approot + seqref + seq_id,
+        "@rel": "related",
+        "@title": "Серия '" + seq_name + "'",
+        "@type": "application/atom+xml"
+    }
+    return ret
