@@ -53,39 +53,39 @@ class BookDBro():
         current_app.logger.debug("end")
         return data
 
-    def get_book_authors(self, book_id):
-        """get authors of one book"""
-        current_app.logger.debug(BOOK_REQ["get_book_authors"] % book_id)
-        self.cur.execute(BOOK_REQ["get_book_authors"] % book_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_book_authors(self, book_id):
+        # """get authors of one book"""
+        # current_app.logger.debug(BOOK_REQ["get_book_authors"] % book_id)
+        # self.cur.execute(BOOK_REQ["get_book_authors"] % book_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_books_authors(self, book_ids):
-        """get authors of many books"""
-        req_data = "', '".join(book_ids)
-        current_app.logger.debug(BOOK_REQ["get_books_authors"] % req_data)
-        self.cur.execute(BOOK_REQ["get_books_authors"] % req_data)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_books_authors(self, book_ids):
+        # """get authors of many books"""
+        # req_data = "', '".join(book_ids)
+        # current_app.logger.debug(BOOK_REQ["get_books_authors"] % req_data)
+        # self.cur.execute(BOOK_REQ["get_books_authors"] % req_data)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_book_seqs(self, book_id):
-        """get sequences which one book belongs to"""
-        current_app.logger.debug(BOOK_REQ["get_book_seqs"] % book_id)
-        self.cur.execute(BOOK_REQ["get_book_seqs"] % book_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_book_seqs(self, book_id):
+        # """get sequences which one book belongs to"""
+        # current_app.logger.debug(BOOK_REQ["get_book_seqs"] % book_id)
+        # self.cur.execute(BOOK_REQ["get_book_seqs"] % book_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_books_seqs(self, book_ids):
-        """get sequences which any of many books belongs to"""
-        req_data = "', '".join(book_ids)
-        current_app.logger.debug(BOOK_REQ["get_books_seqs"] % req_data)
-        self.cur.execute(BOOK_REQ["get_books_seqs"] % req_data)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_books_seqs(self, book_ids):
+        # """get sequences which any of many books belongs to"""
+        # req_data = "', '".join(book_ids)
+        # current_app.logger.debug(BOOK_REQ["get_books_seqs"] % req_data)
+        # self.cur.execute(BOOK_REQ["get_books_seqs"] % req_data)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
     def get_book_descr(self, book_id):
         """get title/annotation/publication for one book"""
@@ -104,69 +104,69 @@ class BookDBro():
         current_app.logger.debug("end")
         return data
 
-    def get_authors_one(self):
-        """get first letters of all authors names"""
-        current_app.logger.debug(BOOK_REQ["get_authors_one"])
-        self.cur.execute(BOOK_REQ["get_authors_one"])
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_authors_one(self):
+        # """get first letters of all authors names"""
+        # current_app.logger.debug(BOOK_REQ["get_authors_one"])
+        # self.cur.execute(BOOK_REQ["get_authors_one"])
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_authors_three(self, auth_sub):
-        """get three letters of authors names on letter"""
-        current_app.logger.debug(BOOK_REQ["get_authors_three"] % auth_sub)
-        self.cur.execute(BOOK_REQ["get_authors_three"] % auth_sub)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_authors_three(self, auth_sub):
+        # """get three letters of authors names on letter"""
+        # current_app.logger.debug(BOOK_REQ["get_authors_three"] % auth_sub)
+        # self.cur.execute(BOOK_REQ["get_authors_three"] % auth_sub)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_authors_list(self, auth_sub):
-        """get list of author with names on three letters"""
-        current_app.logger.debug(BOOK_REQ["get_authors"] % auth_sub)
-        self.cur.execute(BOOK_REQ["get_authors"] % auth_sub)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_authors_list(self, auth_sub):
+        # """get list of author with names on three letters"""
+        # current_app.logger.debug(BOOK_REQ["get_authors"] % auth_sub)
+        # self.cur.execute(BOOK_REQ["get_authors"] % auth_sub)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_author(self, auth_id):
-        """get author by id"""
-        current_app.logger.debug(BOOK_REQ["get_author"] % auth_id)
-        self.cur.execute(BOOK_REQ["get_author"] % auth_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_author(self, auth_id):
+        # """get author by id"""
+        # current_app.logger.debug(BOOK_REQ["get_author"] % auth_id)
+        # self.cur.execute(BOOK_REQ["get_author"] % auth_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_author_seqs(self, auth_id):
-        """get book sequences of author"""
-        current_app.logger.debug(BOOK_REQ["get_auth_seqs"] % auth_id)
-        self.cur.execute(BOOK_REQ["get_auth_seqs"] % auth_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_author_seqs(self, auth_id):
+        # """get book sequences of author"""
+        # current_app.logger.debug(BOOK_REQ["get_auth_seqs"] % auth_id)
+        # self.cur.execute(BOOK_REQ["get_auth_seqs"] % auth_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_author_seq(self, auth_id, seq_id):
-        """list books of author in sequence"""
-        current_app.logger.debug(BOOK_REQ["get_auth_seq"] % (auth_id, seq_id))
-        self.cur.execute(BOOK_REQ["get_auth_seq"] % (auth_id, seq_id))
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_author_seq(self, auth_id, seq_id):
+        # """list books of author in sequence"""
+        # current_app.logger.debug(BOOK_REQ["get_auth_seq"] % (auth_id, seq_id))
+        # self.cur.execute(BOOK_REQ["get_auth_seq"] % (auth_id, seq_id))
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_author_nonseq(self, auth_id, seq_id):
-        """list books of not belong to any sequence"""
-        current_app.logger.debug(BOOK_REQ["get_auth_nonseq"] % (auth_id, seq_id))
-        self.cur.execute(BOOK_REQ["get_auth_nonseq"] % (auth_id, seq_id))
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_author_nonseq(self, auth_id, seq_id):
+        # """list books of not belong to any sequence"""
+        # current_app.logger.debug(BOOK_REQ["get_auth_nonseq"] % (auth_id, seq_id))
+        # self.cur.execute(BOOK_REQ["get_auth_nonseq"] % (auth_id, seq_id))
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_author_books(self, auth_id):
-        """list all books of author"""
-        current_app.logger.debug(BOOK_REQ["get_auth_books"] % auth_id)
-        self.cur.execute(BOOK_REQ["get_auth_books"] % auth_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_author_books(self, auth_id):
+        # """list all books of author"""
+        # current_app.logger.debug(BOOK_REQ["get_auth_books"] % auth_id)
+        # self.cur.execute(BOOK_REQ["get_auth_books"] % auth_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
     def get_seq_name(self, seq_id):
         """get sequence name by id"""
@@ -176,89 +176,89 @@ class BookDBro():
         current_app.logger.debug("end")
         return data[0]
 
-    def get_seqs_one(self):
-        """get first letters of all sequences"""
-        current_app.logger.debug(BOOK_REQ["get_seqs_one"])
-        self.cur.execute(BOOK_REQ["get_seqs_one"])
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_seqs_one(self):
+        # """get first letters of all sequences"""
+        # current_app.logger.debug(BOOK_REQ["get_seqs_one"])
+        # self.cur.execute(BOOK_REQ["get_seqs_one"])
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_seqs_three(self, seq_sub):
-        """get three letters of sequences on letter"""
-        current_app.logger.debug(BOOK_REQ["get_seqs_three"] % seq_sub)
-        self.cur.execute(BOOK_REQ["get_seqs_three"] % seq_sub)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_seqs_three(self, seq_sub):
+        # """get three letters of sequences on letter"""
+        # current_app.logger.debug(BOOK_REQ["get_seqs_three"] % seq_sub)
+        # self.cur.execute(BOOK_REQ["get_seqs_three"] % seq_sub)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_seqs_list(self, seq_sub):
-        """get list of sequences with names on three letters"""
-        current_app.logger.debug(BOOK_REQ["get_seqs"] % seq_sub)
-        self.cur.execute(BOOK_REQ["get_seqs"] % seq_sub)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_seqs_list(self, seq_sub):
+        # """get list of sequences with names on three letters"""
+        # current_app.logger.debug(BOOK_REQ["get_seqs"] % seq_sub)
+        # self.cur.execute(BOOK_REQ["get_seqs"] % seq_sub)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_seq(self, seq_id):
-        """get books in sequence"""
-        current_app.logger.debug(BOOK_REQ["get_seq"] % seq_id)
-        self.cur.execute(BOOK_REQ["get_seq"] % seq_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_seq(self, seq_id):
+        # """get books in sequence"""
+        # current_app.logger.debug(BOOK_REQ["get_seq"] % seq_id)
+        # self.cur.execute(BOOK_REQ["get_seq"] % seq_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_genre_name(self, gen_id):
-        """get name of genre by id"""
-        current_app.logger.debug(BOOK_REQ["get_genre_name"] % gen_id)
-        self.cur.execute(BOOK_REQ["get_genre_name"] % gen_id)
-        data = self.cur.fetchone()
-        current_app.logger.debug("end")
-        return data
+    # def get_genre_name(self, gen_id):
+        # """get name of genre by id"""
+        # current_app.logger.debug(BOOK_REQ["get_genre_name"] % gen_id)
+        # self.cur.execute(BOOK_REQ["get_genre_name"] % gen_id)
+        # data = self.cur.fetchone()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_meta_name(self, meta_id):
-        """get genre meta name by id"""
-        current_app.logger.debug(BOOK_REQ["get_meta_name"] % meta_id)
-        self.cur.execute(BOOK_REQ["get_meta_name"] % meta_id)
-        data = self.cur.fetchone()
-        current_app.logger.debug("end")
-        return data
+    # def get_meta_name(self, meta_id):
+        # """get genre meta name by id"""
+        # current_app.logger.debug(BOOK_REQ["get_meta_name"] % meta_id)
+        # self.cur.execute(BOOK_REQ["get_meta_name"] % meta_id)
+        # data = self.cur.fetchone()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_genres_meta(self):
-        """list genre metas"""
-        current_app.logger.debug(BOOK_REQ["get_genres_meta"])
-        self.cur.execute(BOOK_REQ["get_genres_meta"])
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_genres_meta(self):
+        # """list genre metas"""
+        # current_app.logger.debug(BOOK_REQ["get_genres_meta"])
+        # self.cur.execute(BOOK_REQ["get_genres_meta"])
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_genres(self, meta_id):
-        """list genres in meta"""
-        current_app.logger.debug(BOOK_REQ["get_genres_in_meta"] % meta_id)
-        self.cur.execute(BOOK_REQ["get_genres_in_meta"] % meta_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_genres(self, meta_id):
+        # """list genres in meta"""
+        # current_app.logger.debug(BOOK_REQ["get_genres_in_meta"] % meta_id)
+        # self.cur.execute(BOOK_REQ["get_genres_in_meta"] % meta_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_genre_books(self, gen_id, paginate, limit, offset):
-        """list books in genre"""
-        if paginate:
-            current_app.logger.debug(BOOK_REQ["get_genre_books_pag"] % (gen_id, limit, offset))
-            self.cur.execute(BOOK_REQ["get_genre_books_pag"] % (gen_id, limit, offset))
-        else:
-            current_app.logger.debug(BOOK_REQ["get_genre_books"] % gen_id)
-            self.cur.execute(BOOK_REQ["get_genre_books"] % gen_id)
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_genre_books(self, gen_id, paginate, limit, offset):
+        # """list books in genre"""
+        # if paginate:
+            # current_app.logger.debug(BOOK_REQ["get_genre_books_pag"] % (gen_id, limit, offset))
+            # self.cur.execute(BOOK_REQ["get_genre_books_pag"] % (gen_id, limit, offset))
+        # else:
+            # current_app.logger.debug(BOOK_REQ["get_genre_books"] % gen_id)
+            # self.cur.execute(BOOK_REQ["get_genre_books"] % gen_id)
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
-    def get_books_by_time(self, limit, offset):
-        """paginated list of all books by time"""
-        current_app.logger.debug(BOOK_REQ["get_books_by_time_pag"] % (limit, offset))
-        self.cur.execute(BOOK_REQ["get_books_by_time_pag"] % (limit, offset))
-        data = self.cur.fetchall()
-        current_app.logger.debug("end")
-        return data
+    # def get_books_by_time(self, limit, offset):
+        # """paginated list of all books by time"""
+        # current_app.logger.debug(BOOK_REQ["get_books_by_time_pag"] % (limit, offset))
+        # self.cur.execute(BOOK_REQ["get_books_by_time_pag"] % (limit, offset))
+        # data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        # return data
 
     def get_rnd_books(self, limit):
         """get random books"""

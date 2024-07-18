@@ -40,6 +40,11 @@ URL = {
     "dl": "/fb2/"  # download book
 }
 
+LANG = {
+    "authors": "Авторы",
+    "auth_root_subtitle": "Авторы на "
+}
+
 cover_names = [
     "http://opds-spec.org/image",
     "x-stanza-cover-image",

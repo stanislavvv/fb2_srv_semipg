@@ -8,7 +8,7 @@ import xmltodict
 # pylint: disable=E0402,R0801,C0209
 from .consts import URL
 
-from .views_internals import view_main
+from .views_internals import view_main, view_auth_root
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -27,44 +27,14 @@ def opds_root():
     return resp
 
 
-# @opds.route(URL["seqidx"], methods=['GET'])
-# def opds_seq_root():
-    # """sequences root (letters list)"""
-    # data = view_seq_root()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
-
-
-# @opds.route(URL["seqidx"] + "<sub>", methods=['GET'])
-# def opds_seq_sub(sub):
-    # """three-letters links to lists or lists of sequences"""
-    # data = view_seq_sub(sub)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
-
-
-# @opds.route(URL["seq"] + "<sub1>/<sub2>/<seq_id>", methods=['GET'])
-# def opds_seq(sub1, sub2, seq_id):
-    # """list books in sequence"""
-    # data = view_seq(sub1, sub2, seq_id)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
-
-
-# @opds.route(URL["authidx"], methods=['GET'])
-# def opds_auth_root():
-    # """authors root (letters)"""
-    # data = view_auth_root()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["authidx"], methods=['GET'])
+def opds_auth_root():
+    """authors root (letters)"""
+    data = view_auth_root()
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @opds.route(URL["authidx"] + "<sub>", methods=['GET'])
@@ -131,6 +101,36 @@ def opds_root():
 # def opds_author_time(sub1, sub2, auth_id):
     # """all books of author order by date"""
     # data = view_author_time(sub1, sub2, auth_id)
+    # xml = xmltodict.unparse(data, pretty=True)
+    # resp = Response(xml, mimetype='text/xml')
+    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    # return resp
+
+
+# @opds.route(URL["seqidx"], methods=['GET'])
+# def opds_seq_root():
+    # """sequences root (letters list)"""
+    # data = view_seq_root()
+    # xml = xmltodict.unparse(data, pretty=True)
+    # resp = Response(xml, mimetype='text/xml')
+    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    # return resp
+
+
+# @opds.route(URL["seqidx"] + "<sub>", methods=['GET'])
+# def opds_seq_sub(sub):
+    # """three-letters links to lists or lists of sequences"""
+    # data = view_seq_sub(sub)
+    # xml = xmltodict.unparse(data, pretty=True)
+    # resp = Response(xml, mimetype='text/xml')
+    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    # return resp
+
+
+# @opds.route(URL["seq"] + "<sub1>/<sub2>/<seq_id>", methods=['GET'])
+# def opds_seq(sub1, sub2, seq_id):
+    # """list books in sequence"""
+    # data = view_seq(sub1, sub2, seq_id)
     # xml = xmltodict.unparse(data, pretty=True)
     # resp = Response(xml, mimetype='text/xml')
     # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME

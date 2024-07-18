@@ -3,8 +3,7 @@
 """library opds functions"""
 
 import json
-# import logging
-# import urllib
+import urllib
 
 # from functools import cmp_to_key
 from flask import current_app
@@ -15,9 +14,8 @@ from .internals import get_dtiso  # , id2path, get_book_entry, sizeof_fmt, get_s
 # from .internals import get_books_seqs, get_genre_name
 # from .internals import unicode_upper, html_refine, pubinfo_anno
 # from .internals import custom_alphabet_sort, custom_alphabet_name_cmp, custom_alphabet_book_title_cmp
-from .consts import URL, OPDS  # ,cover_names
-
-# from .opds_int import ret_hdr
+from .internals import custom_alphabet_sort
+from .consts import URL, OPDS
 
 # from .db import dbconnect, quote_string
 
@@ -41,3 +39,89 @@ def main_opds():
         dtiso, approot, URL["rndgenidx"]
     )
     return json.loads(data)
+
+
+def str_list(params):
+    dtiso = get_dtiso()
+    approot = current_app.config['APPLICATION_ROOT']
+    rootdir = current_app.config['STATIC']
+    idx = params["self"]
+    baseref = params["baseref"]
+    title = params["title"]
+    subtitle = params["subtitle"]
+    tag = params["tag"]
+    subtag = params["subtag"]
+    self = params["self"]
+    upref = params["upref"]
+    workdir = rootdir + idx.replace("/opds", "")
+    ret = ret_hdr()
+    ret["feed"]["updated"] = dtiso
+    ret["feed"]["title"] = title
+    ret["feed"]["id"] = tag
+    ret["feed"]["link"].append(
+        {
+            "@href": approot + self,
+            "@rel": "self",
+            "@type": "application/atom+xml;profile=opds-catalog"
+        }
+    )
+    ret["feed"]["link"].append(
+        {
+            "@href": approot + upref,
+            "@rel": "up",
+            "@type": "application/atom+xml;profile=opds-catalog"
+        }
+    )
+    try:
+        with open(workdir + "/index.json") as jsfile:
+            data = json.load(jsfile)
+    except Exception as e:
+        print(e)
+        return ret
+    data_sorted = custom_alphabet_sort(data)
+    for d in data_sorted:
+        ret["feed"]["entry"].append(
+            {
+                "updated": dtiso,
+                "id": subtag + urllib.parse.quote(d),
+                "title": d,
+                "content": {
+                    "@type": "text",
+                    "#text": subtitle + "'" + d + "'"
+                },
+                "link": {
+                    "@href": approot + baseref + urllib.parse.quote(d),
+                    "@type": "application/atom+xml;profile=opds-catalog"
+                }
+            }
+        )
+    return ret
+
+
+def ret_hdr():  # python does not have constants
+    """return opds title"""
+    return {
+        "feed": {
+            "@xmlns": "http://www.w3.org/2005/Atom",
+            "@xmlns:dc": "http://purl.org/dc/terms/",
+            "@xmlns:os": "http://a9.com/-/spec/opensearch/1.1/",
+            "@xmlns:opds": "http://opds-spec.org/2010/catalog",
+            "id": "tag:root:authors",
+            "updated": "0000-00-00_00:00",
+            "title": "Books by authors",
+            "icon": "/favicon.ico",
+            "link": [
+                {
+                    "@href": current_app.config['APPLICATION_ROOT'] + URL["search"] + "?searchTerm={searchTerms}",
+                    "@rel": "search",
+                    "@type": "application/atom+xml"
+                },
+                {
+                    "@href": current_app.config['APPLICATION_ROOT'] + URL["start"],
+                    "@rel": "start",
+                    "@type": "application/atom+xml;profile=opds-catalog"
+                }
+            ],
+            "entry": []
+        }
+    }
