@@ -11,6 +11,7 @@ from .consts import URL
 from .views_internals import view_main, view_auth_root, view_auth_sub, view_author, view_author_alphabet
 from .views_internals import view_author_time, view_author_seqs, view_author_seq, view_author_nonseq
 from .views_internals import view_seq_root, view_seq_sub, view_seq
+from .views_internals import view_gen_root, view_gen_meta, view_genre
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -139,35 +140,35 @@ def opds_seq(sub1, sub2, seq_id):
     return resp
 
 
-# @opds.route(URL["genidx"], methods=['GET'])
-# def opds_gen_root():
-    # """genres meta list"""
-    # data = view_gen_root()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["genidx"], methods=['GET'])
+def opds_gen_root():
+    """genres meta list"""
+    data = view_gen_root()
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["genidx"] + "<sub>", methods=['GET'])
-# def opds_gen_meta(sub):
-    # """genres meta"""
-    # data = view_gen_meta(sub)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["genidx"] + "<sub>", methods=['GET'])
+def opds_gen_meta(sub):
+    """genres meta"""
+    data = view_gen_meta(sub)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["genre"] + "<gen_id>", methods=['GET'])
-# @opds.route(URL["genre"] + "<gen_id>/<int:page>", methods=['GET'])
-# def opds_genre(gen_id, page=0):
-    # """books in genre, paginated"""
-    # data = view_genre(gen_id, page)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["genre"] + "<gen_id>", methods=['GET'])
+@opds.route(URL["genre"] + "<gen_id>/<int:page>", methods=['GET'])
+def opds_genre(gen_id, page=0):
+    """books in genre, paginated"""
+    data = view_genre(gen_id, page)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @opds.route(URL["rndbook"], methods=['GET'])

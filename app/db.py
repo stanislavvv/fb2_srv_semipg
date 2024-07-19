@@ -33,6 +33,12 @@ class BookDBro():
     """read-only interface for books database"""
     # pylint: disable=R0904
 
+    # genres meta (see get_genres_meta())
+    genres_meta = {}
+
+    # genres (see get_genres())
+    genres = {}
+
     def __init__(self, pg_host, pg_base, pg_user, pg_pass):
         # pylint: disable=R0801
         # current_app.logger.debug("db conn params:", pg_host, pg_base, pg_user, pg_pass)
@@ -43,7 +49,31 @@ class BookDBro():
             password=pg_pass
         )
         self.cur = self.conn.cursor()
+        self.__get_genres_meta()
+        self.__get_genres()
         current_app.logger.debug("connected to db")
+
+    def __get_genres_meta(self):
+        """init genres meta dict"""
+        with open('genres_meta.list', 'r', encoding='utf-8') as data:
+            while True:
+                line = data.readline()
+                if not line:
+                    break
+                meta_line = line.strip('\n').split('|')
+                if len(meta_line) > 1:
+                    self.genres_meta[meta_line[0]] = meta_line[1]
+
+    def __get_genres(self):
+        """init genres dict"""
+        with open('genres.list', 'r', encoding='utf-8') as data:
+            while True:
+                line = data.readline()
+                if not line:
+                    break
+                genre_line = line.strip('\n').split('|')
+                if len(genre_line) > 1:
+                    self.genres[genre_line[1]] = {"descr": genre_line[2], "meta_id": genre_line[0]}
 
     def get_genre_names(self):
         """get ALL genre names with id"""
@@ -216,13 +246,13 @@ class BookDBro():
         # current_app.logger.debug("end")
         # return data
 
-    # def get_meta_name(self, meta_id):
-        # """get genre meta name by id"""
-        # current_app.logger.debug(BOOK_REQ["get_meta_name"] % meta_id)
-        # self.cur.execute(BOOK_REQ["get_meta_name"] % meta_id)
-        # data = self.cur.fetchone()
-        # current_app.logger.debug("end")
-        # return data
+    def get_meta_name(self, meta_id):
+        """get genre meta name by id"""
+        current_app.logger.debug(BOOK_REQ["get_meta_name"] % meta_id)
+        self.cur.execute(BOOK_REQ["get_meta_name"] % meta_id)
+        data = self.cur.fetchone()
+        current_app.logger.debug("end")
+        return data
 
     # def get_genres_meta(self):
         # """list genre metas"""
@@ -236,18 +266,6 @@ class BookDBro():
         # """list genres in meta"""
         # current_app.logger.debug(BOOK_REQ["get_genres_in_meta"] % meta_id)
         # self.cur.execute(BOOK_REQ["get_genres_in_meta"] % meta_id)
-        # data = self.cur.fetchall()
-        # current_app.logger.debug("end")
-        # return data
-
-    # def get_genre_books(self, gen_id, paginate, limit, offset):
-        # """list books in genre"""
-        # if paginate:
-            # current_app.logger.debug(BOOK_REQ["get_genre_books_pag"] % (gen_id, limit, offset))
-            # self.cur.execute(BOOK_REQ["get_genre_books_pag"] % (gen_id, limit, offset))
-        # else:
-            # current_app.logger.debug(BOOK_REQ["get_genre_books"] % gen_id)
-            # self.cur.execute(BOOK_REQ["get_genre_books"] % gen_id)
         # data = self.cur.fetchall()
         # current_app.logger.debug("end")
         # return data

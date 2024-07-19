@@ -3,16 +3,17 @@
 
 import json
 
-from flask import current_app
 from functools import cmp_to_key
+from flask import current_app
 
 from .consts import URL
 from .internals import get_dtiso, id2path, custom_alphabet_book_title_cmp, unicode_upper
 from .internals import custom_alphabet_name_cmp
 from .opds import ret_hdr, add_link, make_book_entry, make_seq_entry
+# pylint: disable=C0103,R1702,R1705,R0912
 
 
-def auth_main(params):
+def auth_main(params):  # pylint: disable=R0914
     """main page for author"""
     dtiso = get_dtiso()
     approot = current_app.config['APPLICATION_ROOT']
@@ -33,7 +34,7 @@ def auth_main(params):
         with open(workfile) as nm:
             auth_data = json.load(nm)
             auth_name = "'" + auth_data["name"] + "'"
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         print(e)
         auth_name = ""
     ret = ret_hdr()
@@ -108,7 +109,8 @@ def auth_main(params):
     return ret
 
 
-def auth_books(params):
+def auth_books(params):  # pylint: disable=R0914,R0915
+    """make data for author's books"""
     dtiso = get_dtiso()
     approot = current_app.config['APPLICATION_ROOT']
     rootdir = current_app.config['STATIC']
@@ -130,7 +132,7 @@ def auth_books(params):
         with open(workfile) as nm:
             auth_data = json.load(nm)
             auth_name = "'" + auth_data["name"] + "'"
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         print(e)
         auth_name = ""
 
@@ -149,7 +151,7 @@ def auth_books(params):
     try:
         with open(workfile) as nm:
             data = json.load(nm)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         print(e)
         return ret
 

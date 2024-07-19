@@ -8,18 +8,11 @@ import urllib
 from functools import cmp_to_key
 from flask import current_app
 
-# pylint: disable=E0402,C0209
+# pylint: disable=E0402,C0209,C0103
 from .internals import get_dtiso, id2path, html_refine, get_genre_name, sizeof_fmt
 from .internals import get_book_link
-# , get_book_entry, get_seq_link
-# from .internals import get_book_link, get_books_descr, get_books_authors
-# from .internals import get_books_seqs
-# from .internals import unicode_upper, pubinfo_anno
-# from .internals import custom_alphabet_sort, custom_alphabet_name_cmp, custom_alphabet_book_title_cmp
 from .internals import custom_alphabet_sort, custom_alphabet_name_cmp, custom_alphabet_cmp, pubinfo_anno
-from .consts import URL, OPDS, LANG
-
-# from .db import dbconnect, quote_string
+from .consts import URL, OPDS, LANG, cover_names
 
 
 def main_opds():
@@ -43,7 +36,8 @@ def main_opds():
     return json.loads(data)
 
 
-def str_list(params):
+def str_list(params, layout=None, sub=None):  # pylint: disable=R0914
+    """list to opds data struct"""
     dtiso = get_dtiso()
     approot = current_app.config['APPLICATION_ROOT']
     rootdir = current_app.config['STATIC']
@@ -55,7 +49,7 @@ def str_list(params):
     subtag = params["subtag"]
     self = params["self"]
     upref = params["upref"]
-    workdir = rootdir + idx.replace("/opds", "")
+
     ret = ret_hdr()
     ret["feed"]["updated"] = dtiso
     ret["feed"]["title"] = title
@@ -63,23 +57,38 @@ def str_list(params):
     ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
     ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
 
+    if sub is not None:
+        workfile = rootdir + idx.replace("/opds", "") + ".json"
+    else:
+        workdir = rootdir + idx.replace("/opds", "")
+        workfile = workdir + "/index.json"
     try:
-        with open(workdir + "/index.json") as jsfile:
+        with open(workfile) as jsfile:
             data = json.load(jsfile)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         print(e)
         return ret
 
-    data_sorted = custom_alphabet_sort(data)
+    data_sorted = []
+    if layout == "values":
+        for k, v in sorted(data.items(), key=lambda item: item[1]):  # pylint: disable=W0612
+            data_sorted.append(k)
+    else:
+        data_sorted = custom_alphabet_sort(data)
+
     for d in data_sorted:
+        if layout == "values":
+            title = data[d]
+        else:
+            title = d
         ret["feed"]["entry"].append(
             {
                 "updated": dtiso,
                 "id": subtag + urllib.parse.quote(d),
-                "title": d,
+                "title": title,
                 "content": {
                     "@type": "text",
-                    "#text": subtitle + "'" + d + "'"
+                    "#text": subtitle + "'" + title + "'"
                 },
                 "link": {
                     "@href": approot + baseref + urllib.parse.quote(d),
@@ -90,7 +99,8 @@ def str_list(params):
     return ret
 
 
-def strnum_list(params):
+def strnum_list(params):  # pylint: disable=R0914
+    """list with numbers to opds data struct"""
     dtiso = get_dtiso()
     approot = current_app.config['APPLICATION_ROOT']
     rootdir = current_app.config['STATIC']
@@ -111,13 +121,15 @@ def strnum_list(params):
     ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
     ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
 
-    if params["idxroot"] is not None:
-        workdir = rootdir + upref.replace("/opds", "")
-        workfile = workdir + params["idxroot"] + "/" + params["sub"] + ".json"
-    else:
+    if params["idxroot"] is None:
         workdir = rootdir + idx.replace("/opds", "")
         workfile = workdir + "/index.json"
-    print("dir: %s, file: %s" % (workdir, workfile))
+    else:
+        workdir = rootdir + upref.replace("/opds", "")
+        if params["idxroot"] == "":
+            workfile = workdir + "/" + params["sub"] + ".json"
+        else:
+            workfile = workdir + params["idxroot"] + "/" + params["sub"] + ".json"
     try:
         with open(workfile) as jsfile:
             data = json.load(jsfile)
@@ -286,6 +298,13 @@ def make_book_entry(book, dtiso, authref, seqref, seq_id=None):
                         seq_num = "0"
     links.append(get_book_link(approot, zipfile, filename, 'dl'))
     links.append(get_book_link(approot, zipfile, filename, 'read'))
+
+    for rel in cover_names:
+        links.append({
+            "@href": "%s/cover/%s/jpg" % (approot, book_id),
+            "@rel": rel,
+            "@type": "image/jpeg"  # To Do get from db
+        })
 
     if seq_id is not None and seq_id != '':
         annotext = """

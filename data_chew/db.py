@@ -164,12 +164,12 @@ class BookDB():
                     if self.genres_replacements[i] is not None and self.genres_replacements[i] != "":
                         ret.append(self.genres_replacements[i])
                 else:
-                    logging.warning(
-                        "unknown genre '%s' replaced to 'other' for %s/%s",
-                        i,
-                        book["zipfile"],
-                        book["filename"]
-                    )
+                    # logging.debug(
+                    #     "unknown genre '%s' replaced to 'other' for %s/%s",
+                    #     i,
+                    #     book["zipfile"],
+                    #     book["filename"]
+                    # )
                     ret.append('other')
             else:
                 ret.append(i)
@@ -178,13 +178,13 @@ class BookDB():
     def lang_replace(self, book, lng):
         """return langs or replaced lang -- simple variant"""
         if lng in self.langs_replacements:
-            logging.debug(
-                "replaced lang '%s' to '%s' for %s/%s",
-                lng,
-                self.langs_replacements[lng],
-                book["zipfile"],
-                book["filename"]
-            )
+            # logging.debug(
+            #     "replaced lang '%s' to '%s' for %s/%s",
+            #     lng,
+            #     self.langs_replacements[lng],
+            #     book["zipfile"],
+            #     book["filename"]
+            # )
             return self.langs_replacements[lng]
         return lng
 

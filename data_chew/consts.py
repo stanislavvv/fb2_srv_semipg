@@ -191,5 +191,14 @@ GET_REQ = {
     "get_seqs": """
         SELECT id, name FROM sequences
         WHERE upper(substring(sequences.name, 1, 3)) = '%s' GROUP BY id, name;
+    """,
+    "get_genres_cnt": """
+        SELECT count(*) FROM genres;
+    """,
+    "get_metas": """
+        SELECT meta_id, name FROM genres_meta;
+    """,
+    "get_genres_in_meta": """
+        SELECT id, name FROM genres WHERE meta_id = '%s';
     """
 }

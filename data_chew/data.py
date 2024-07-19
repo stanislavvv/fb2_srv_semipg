@@ -15,13 +15,13 @@ import sys
 
 from datetime import datetime
 
-import xmltodict
 import typing
+import xmltodict
 
 from bs4 import BeautifulSoup
 from PIL import Image
 
-# pylint: disable=E0402
+# pylint: disable=E0402,C0103
 from .strings import strlist, strip_quotes, unicode_upper
 
 READ_SIZE = 20480  # description in 20kb...
@@ -29,6 +29,18 @@ READ_SIZE = 20480  # description in 20kb...
 data_config = {
     "width": 200
 }
+
+alphabet_1 = [  # first letters in main authors/sequences page
+    'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й',
+    'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф',
+    'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я'
+]
+
+alphabet_2 = [  # second letters in main authors/sequences page
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+    'U', 'V', 'W', 'X', 'Y', 'Z'
+]
 
 
 def set_data_config(name: typing.Optional[str], value: int) -> None:
@@ -572,8 +584,80 @@ def nonseq_from_data(data):
     return ret
 
 
-def strip_book(book):
-    """strip images and some other data from books info"""
+def refine_book(db, book):
+    """strip images and refine some other data from books info"""
+    if "genres" not in book or book["genres"] in (None, "", []):
+        # book["genres"] is None or book["genres"] == "" or book["genres"] == []:
+        book["genres"] = ["other"]
+    book["genres"] = db.genres_replace(book, book["genres"])
+    book["lang"] = db.lang_replace(book, book["lang"])
     if "cover" in book:
         del book["cover"]
     return book
+
+
+def custom_alphabet_book_title_cmp(str1, str2):  # pylint: disable=R0911
+    """custom compare book_title fields"""
+    s1len = len(str1["book_title"])
+    s2len = len(str2["book_title"])
+    i = 0
+    # zero-length strings case
+    if s1len == i:
+        if i == s2len:  # pylint: disable=R1705
+            return 0
+        else:
+            return -1
+    elif i == s2len:
+        return 1
+
+    while custom_char_cmp(str1["book_title"][i], str2["book_title"][i]) == 0:
+        i = i + 1
+        if i == s1len:
+            if i == s2len:  # pylint: disable=R1705
+                return 0
+            else:
+                return -1
+        elif i == s2len:
+            return 1
+    return custom_char_cmp(str1["book_title"][i], str2["book_title"][i])
+
+
+def custom_char_cmp(char1: str, char2: str):  # pylint: disable=R0911
+    """custom compare chars"""
+    if char1 == char2:
+        return 0
+
+    if char1 in alphabet_1 and char2 not in alphabet_1:
+        return -1
+    if char1 in alphabet_2 and char2 not in alphabet_2 and char2 not in alphabet_1:
+        return -1
+    if char2 in alphabet_1 and char1 not in alphabet_1:
+        return 1
+    if char2 in alphabet_2 and char1 not in alphabet_2 and char1 not in alphabet_1:
+        return 1
+
+    # sort by array order
+    if char1 in alphabet_1 and char2 in alphabet_1:
+        return cmp_in_arr(alphabet_1, char1, char2)
+    if char1 in alphabet_2 and char1 in alphabet_2:
+        return cmp_in_arr(alphabet_2, char1, char2)
+
+    if char1 < char2:  # pylint: disable=R1705
+        return -1
+    else:
+        return +1
+
+
+def cmp_in_arr(arr, char1, char2):
+    """compare characters by array"""
+    if char1 in arr and char2 in arr:
+        idx1 = arr.index(char1)
+        idx2 = arr.index(char2)
+        if idx1 == idx2:  # pylint: disable=R1705
+            return 0
+        elif idx1 < idx2:
+            return -1
+        else:
+            return 1
+    else:
+        return None

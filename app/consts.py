@@ -55,7 +55,13 @@ LANG = {
     "seq_root_subtitle": "Серии на ",
     "sequence": "Серия ",
     "seq_tpl": "Серия '%s'",
-    "seqs_num": "%d сер."
+    "seqs_num": "%d сер.",
+
+    "genres_meta": "Группы жанров",
+    "genres": "Жанры",
+    "genre": "Жанр ",
+    "genres_root_subtitle": "Жанры в ",
+    "genre_tpl": "Жанр '%s'",
 }
 
 cover_names = [

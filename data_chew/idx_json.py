@@ -6,16 +6,18 @@ import logging
 import glob
 
 from pathlib import Path
+from functools import cmp_to_key
 
 from .idx import open_booklist
 from .strings import id2path, id2pathonly, quote_string
-from .data import seqs_in_data, nonseq_from_data, strip_book
+from .data import seqs_in_data, nonseq_from_data, refine_book, custom_alphabet_book_title_cmp
 
 MAX_PASS_LENGTH = 1000
 MAX_PASS_LENGTH_GEN = 5
 
 auth_processed = {}
 seq_processed = {}
+gen_processed = {}
 
 # pylint: disable=C0103,W0613
 
@@ -33,8 +35,7 @@ def process_lists(db, zipdir, pagesdir, stage, hide_deleted=False):
             logging.debug(" - processed authors: %d/%d", len(auth_processed), auth_cnt)
         make_auth_subindexes(db, pagesdir)
     elif stage == "sequences":
-        seq_cnt = db.get_data("get_seqs_cnt")
-        seq_cnt = seq_cnt[0][0]
+        seq_cnt = db.get_data("get_seqs_cnt")[0][0]
         logging.info("Creating sequences indexes (total: %d)...", seq_cnt)
         while len(seq_processed) < seq_cnt:
             make_seq_data(db, zipdir, pagesdir, hide_deleted)
@@ -42,13 +43,12 @@ def process_lists(db, zipdir, pagesdir, stage, hide_deleted=False):
         make_seq_subindexes(db, pagesdir)
     elif stage == "genres":
         pass
-        # with open(pagesdir + "/allgenrecnt.json") as f:
-            # gen_cnt = json.load(f)
-        # logging.info("Creating genres indexes (total: %s)..." % gen_cnt)
-        # while(len(gen_processed) < gen_cnt):
-            # make_gen_data(pagesdir)
-            # logging.debug(" - processed genres: %d/%d" % (len(gen_processed), gen_cnt))
-        # make_gen_subindexes(pagesdir)
+        gen_cnt = db.get_data("get_seqs_cnt")[0][0]
+        logging.info("Creating genres indexes (total: %s)..." % gen_cnt)
+        while(len(gen_processed) < gen_cnt):
+            make_gen_data(db, zipdir, pagesdir, hide_deleted)
+            logging.debug(" - processed genres: %d/%d" % (len(gen_processed), gen_cnt))
+        make_gen_subindexes(db, pagesdir)
     else:
         logging.error("Unknow stage")
 
@@ -100,11 +100,13 @@ def make_auth_data(db, zipdir, pagesdir, hide_deleted=False):  # pylint: disable
         with open_booklist(booklist) as lst:
             for b in lst:
                 book = json.loads(b)
+                if book is None:
+                    continue
                 if hide_deleted and "deleted" in book and book["deleted"] != 0:
                     continue
-                book = strip_book(book)
+                book = refine_book(db, book)
                 if book["authors"] is not None:
-                    book = strip_book(book)
+                    book = refine_book(db, book)
                     for auth in book["authors"]:
                         auth_id = auth.get("id")
                         auth_name = auth.get("name")
@@ -190,9 +192,11 @@ def make_seq_data(db, zipdir, pagesdir, hide_deleted=False):  # pylint: disable=
         with open_booklist(booklist) as lst:
             for b in lst:
                 book = json.loads(b)
+                if book is None:
+                    continue
                 if hide_deleted and "deleted" in book and book["deleted"] != 0:
                     continue
-                book = strip_book(book)
+                book = refine_book(db, book)
                 if book["sequences"] is not None:
                     for seq in book["sequences"]:
                         seq_id = seq.get("id")
@@ -216,3 +220,92 @@ def make_seq_data(db, zipdir, pagesdir, hide_deleted=False):  # pylint: disable=
         with open(workfile, 'w') as idx:
             json.dump(data, idx, indent=2, ensure_ascii=False)
         seq_processed[seq_id] = 1
+
+
+def make_gen_subindexes(db, pagesdir):  # pylint: disable=R0914
+    genidxbase = "/genresindex/"
+    workdir = pagesdir + genidxbase
+    Path(workdir).mkdir(parents=True, exist_ok=True)
+    metas = db.get_data("get_metas")
+
+    data = {}
+    for meta in metas:
+        meta_id = meta[0]
+        meta_name = meta[1]
+        data[meta_id] = meta_name
+    workfile = workdir + "index.json"
+    with open(workfile, 'w') as idx:
+        json.dump(data, idx, indent=2, ensure_ascii=False)
+
+    for meta_id in data:
+        workfile = workdir + str(meta_id) + ".json"
+        gdata = db.get_data_par1("get_genres_in_meta", meta_id)
+        genre_data = {}
+        for gen in gdata:
+            gen_id = gen[0]
+            gen_name = gen[1]
+            genre_data[gen_id] = gen_name
+        with open(workfile, 'w') as idx:
+            json.dump(genre_data, idx, indent=2, ensure_ascii=False)
+
+
+def make_gen_data(db, zipdir, pagesdir, hide_deleted=False):  # pylint: disable=R0912,R0914
+    """make per-genres book lists"""
+    # global gen_idx
+    # global gen_processed
+    genres = db.genres
+
+    gen_data_base = "/genre/"  # for genre data
+    gen_data = {}
+    gen_names = {}
+
+    for booklist in sorted(glob.glob(zipdir + '/*.zip.list') + glob.glob(zipdir + '/*.zip.list.gz')):
+        with open_booklist(booklist) as lst:
+            for b in lst:
+                book = json.loads(b)
+                if book is None:
+                    continue
+                if hide_deleted and "deleted" in book and book["deleted"] != 0:
+                    continue
+                book = refine_book(db, book)
+                if book["genres"] is not None:
+                    for gen in book["genres"]:
+                        gen_id = gen
+                        gen_name = gen
+                        if gen in genres:
+                            gen_name = genres[gen]["descr"]
+                        gen_names[gen_id] = gen_name
+                        if gen_id not in gen_processed:
+                            if gen_id in gen_data:
+                                s = gen_data[gen_id]
+                                s.append(book)
+                                gen_data[gen_id] = s
+                            elif len(gen_data) < MAX_PASS_LENGTH_GEN:
+                                s = []
+                                s.append(book)
+                                gen_data[gen_id] = s
+    workdir = pagesdir + gen_data_base
+    Path(workdir).mkdir(parents=True, exist_ok=True)
+    for gen in gen_data:
+        workdir = pagesdir + gen_data_base + gen
+        Path(workdir).mkdir(parents=True, exist_ok=True)
+
+        # data = {"id": gen, "name": gen_names[gen], "books": gen_data[gen]}
+        data = []
+        for book in gen_data[gen]:
+            data.append(book["book_id"])
+
+        workfile = pagesdir + gen_data_base + gen + "/all.json"
+        with open(workfile, 'w') as idx:
+            json.dump(data, idx, indent=2, ensure_ascii=False)
+
+        i = 0
+        data = sorted(gen_data[gen], key=cmp_to_key(custom_alphabet_book_title_cmp))
+        while len(data) > 0:
+            wdata = data[:50]
+            data = data[50:]
+            workfile = pagesdir + gen_data_base + gen + "/" + str(i) + ".json"
+            with open(workfile, 'w') as idx:
+                json.dump(wdata, idx, indent=2, ensure_ascii=False)
+            i = i + 1
+        gen_processed[gen] = 1

@@ -135,7 +135,7 @@ def process_lists_db(db, zipdir, stage, hide_deleted=False):  # pylint: disable=
     elif stage == "newonly":
         logging.error("NOT IMPLEMENTED")
     else:
-        logging.error("unknown stage: %s" % stage)
+        logging.error("unknown stage: %s", stage)
 
     # try:
         # # recalc counts and commit

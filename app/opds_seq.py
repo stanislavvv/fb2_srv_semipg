@@ -4,12 +4,10 @@
 import json
 
 from flask import current_app
-from functools import cmp_to_key
 
 from .consts import URL
-from .internals import get_dtiso, id2path, custom_alphabet_book_title_cmp, unicode_upper
-from .internals import custom_alphabet_name_cmp
-from .opds import ret_hdr, add_link, make_book_entry, make_seq_entry
+from .internals import get_dtiso, id2path
+from .opds import ret_hdr, add_link, make_book_entry
 
 
 def seq_books(params):
@@ -24,7 +22,6 @@ def seq_books(params):
     upref = params["upref"]
     authref = params["authref"]
     seqref = params["seqref"]
-    layout = params["layout"]
     seq_id = params["id"]
 
     workfile = rootdir + URL["seq"].replace("/opds", "") + id2path(seq_id) + ".json"

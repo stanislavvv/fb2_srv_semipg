@@ -7,14 +7,12 @@
 from .opds import main_opds, str_list, strnum_list
 from .opds_auth import auth_main, auth_books
 from .opds_seq import seq_books
-# , seq_cnt_list, books_list, auth_list, main_author
-# from .opds import author_seqs, name_list, name_cnt_list, random_data
-# from .opds import search_main, search_term
-from .validate import validate_prefix, validate_id
-# , validate_genre_meta
-# from .validate import validate_genre, validate_search
-# from .internals import id2path, get_author_name, get_seq_name, get_meta_name
+from .opds_gen import genre_books
+from .validate import validate_prefix, validate_id, validate_genre_meta, validate_genre, redir_invalid
+from .internals import get_meta_name, get_genre_name
 from .consts import LANG, URL
+
+REDIR_ALL = "html.html_root"
 
 
 def view_main():
@@ -38,6 +36,7 @@ def view_auth_root():
 
 
 def view_auth_sub(sub):
+    """authorsindes/<sub>"""
     sub = validate_prefix(sub)
     params = {
         "sub": sub,
@@ -63,6 +62,7 @@ def view_auth_sub(sub):
 
 
 def view_author(sub1, sub2, auth_id):
+    """author/sub1/sub2/id"""
     sub1 = validate_prefix(sub1)
     sub2 = validate_prefix(sub2)
     auth_id = validate_id(auth_id)
@@ -82,6 +82,7 @@ def view_author(sub1, sub2, auth_id):
 
 
 def view_author_alphabet(sub1, sub2, auth_id):
+    """author/sub1/sub2/id/alphabet"""
     sub1 = validate_prefix(sub1)
     sub2 = validate_prefix(sub2)
     auth_id = validate_id(auth_id)
@@ -101,6 +102,7 @@ def view_author_alphabet(sub1, sub2, auth_id):
 
 
 def view_author_time(sub1, sub2, auth_id):
+    """author/sub1/sub2/id/time"""
     sub1 = validate_prefix(sub1)
     sub2 = validate_prefix(sub2)
     auth_id = validate_id(auth_id)
@@ -120,6 +122,7 @@ def view_author_time(sub1, sub2, auth_id):
 
 
 def view_author_seqs(sub1, sub2, auth_id):
+    """author/sub1/sub2/id/sequences"""
     sub1 = validate_prefix(sub1)
     sub2 = validate_prefix(sub2)
     auth_id = validate_id(auth_id)
@@ -139,6 +142,7 @@ def view_author_seqs(sub1, sub2, auth_id):
 
 
 def view_author_seq(sub1, sub2, auth_id, seq_id):
+    """author/sub1/sub2/id/seq_id"""
     sub1 = validate_prefix(sub1)
     sub2 = validate_prefix(sub2)
     auth_id = validate_id(auth_id)
@@ -159,6 +163,7 @@ def view_author_seq(sub1, sub2, auth_id, seq_id):
 
 
 def view_author_nonseq(sub1, sub2, auth_id):
+    """author/sub1/sub2/id/sequenceless"""
     sub1 = validate_prefix(sub1)
     sub2 = validate_prefix(sub2)
     auth_id = validate_id(auth_id)
@@ -193,6 +198,7 @@ def view_seq_root():
 
 
 def view_seq_sub(sub):
+    """sequencesindex/sub"""
     sub = validate_prefix(sub)
     params = {
         "sub": sub,
@@ -218,6 +224,7 @@ def view_seq_sub(sub):
 
 
 def view_seq(sub1, sub2, seq_id):
+    """sequence/sub1/sub2/id"""
     sub1 = validate_prefix(sub1)
     sub2 = validate_prefix(sub2)
     seq_id = validate_id(seq_id)
@@ -234,3 +241,53 @@ def view_seq(sub1, sub2, seq_id):
         "layout": "sequence"
     }
     return seq_books(params)
+
+
+def view_gen_root():
+    """genresindex/"""
+    params = {
+        "self": URL["genidx"],
+        "baseref": URL["genidx"],
+        "upref": URL["start"],
+        "tag": "tag:root:genres",
+        "title": LANG["genres_meta"],
+        "subtag": "tag:genres:",
+        "subtitle": LANG["genres_root_subtitle"]
+    }
+    return str_list(params, layout="values")
+
+
+def view_gen_meta(sub):
+    """genresindex/sub"""
+    sub = validate_genre_meta(sub)
+    meta_name = get_meta_name(sub)
+    if meta_name is not None:
+        params = {
+            "self": URL["genidx"] + sub,
+            "baseref": URL["genre"],
+            "upref": URL["genidx"],
+            "tag": "tag:genres:" + sub,
+            "title": LANG["genres_root_subtitle"] + "'" + meta_name + "'",
+            "subtag": "tag:genres:",
+            "subtitle": LANG["genres_root_subtitle"]
+        }
+        return str_list(params, layout="values", sub=sub)
+    return redir_invalid(REDIR_ALL)
+
+
+def view_genre(gen_id, page):
+    """genre/id/page"""
+    gen_id = validate_genre(gen_id)
+    gen_name = get_genre_name(gen_id)
+    params = {
+        "id": gen_id,
+        "self": URL["genre"] + "%s" % gen_id,
+        "upref": URL["genidx"],
+        "tag": "tag:root:genre:" + gen_id,
+        "title": LANG["genre"] + gen_name,
+        "authref": URL["author"],
+        "seqref": URL["seq"],
+        "name": gen_name,
+        "page": page
+    }
+    return genre_books(params)

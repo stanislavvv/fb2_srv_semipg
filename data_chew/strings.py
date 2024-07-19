@@ -5,6 +5,8 @@ import codecs
 import unicodedata as ud
 import typing
 
+# pylint: disable=C0103
+
 
 def strnull(string: typing.Optional[str] = None) -> str:
     """return empty string if None, else return content"""
@@ -65,14 +67,14 @@ def quote_string(string: str, errors: str = "strict") -> str:
     return encodable.replace("\'", "\'\'")
 
 
-def id2path(id: str):
+def id2path(id: str):  # pylint: disable=W0622
     """1a2b3c.... to 1a/2b/1a2b3c..."""
     first = id[:2]
     second = id[2:4]
     return first + "/" + second + "/" + id
 
 
-def id2pathonly(id: str):
+def id2pathonly(id: str):  # pylint: disable=W0622
     """1a2b3c.... to 1a/2b"""
     first = id[:2]
     second = id[2:4]
