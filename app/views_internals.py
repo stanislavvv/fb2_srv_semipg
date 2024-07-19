@@ -6,6 +6,7 @@
 # pylint: disable=E0402,C0209
 from .opds import main_opds, str_list, strnum_list
 from .opds_auth import auth_main, auth_books
+from .opds_seq import seq_books
 # , seq_cnt_list, books_list, auth_list, main_author
 # from .opds import author_seqs, name_list, name_cnt_list, random_data
 # from .opds import search_main, search_term
@@ -174,3 +175,62 @@ def view_author_nonseq(sub1, sub2, auth_id):
         "layout": "sequenceless"
     }
     return auth_books(params)
+
+
+def view_seq_root():
+    """sequencesindex/"""
+    params = {
+        "self": URL["seqidx"],
+        "baseref": URL["seqidx"],
+        "upref": URL["start"],
+        "tag": "tag:root:sequences",
+        "title": LANG["sequences"],
+        "subtag": "tag:sequences:",
+        "subtitle": LANG["seq_root_subtitle"],
+        "req": "seq_1"
+    }
+    return str_list(params)
+
+
+def view_seq_sub(sub):
+    sub = validate_prefix(sub)
+    params = {
+        "sub": sub,
+        "self": URL["seqidx"] + sub,
+        "upref": URL["seqidx"],
+        "tag": "tag:sequences:" + sub,
+        "title": LANG["seq_root_subtitle"] + " '" + sub + "'",
+        "subtag": "tag:sequences:",
+        "subtitle": LANG["seq_root_subtitle"],
+        "req": "seq_3"
+    }
+    if len(sub) >= 3:
+        params["baseref"] = URL["seq"]
+        params["layout"] = "from_id"
+        params["tpl"] = LANG["seq_tpl"]
+        params["idxroot"] = sub[0]
+    else:
+        params["baseref"] = URL["seqidx"]
+        params["layout"] = "simple"
+        params["tpl"] = LANG["seqs_num"]
+        params["idxroot"] = None
+    return strnum_list(params)
+
+
+def view_seq(sub1, sub2, seq_id):
+    sub1 = validate_prefix(sub1)
+    sub2 = validate_prefix(sub2)
+    seq_id = validate_id(seq_id)
+    params = {
+        "sub1": sub1,
+        "sub2": sub2,
+        "id": seq_id,
+        "self": URL["seq"] + "%s/%s/%s" % (sub1, sub2, seq_id),
+        "upref": URL["seq"] + "%s/%s/%s" % (sub1, sub2, seq_id),
+        "tag": "tag:root:sequence:" + seq_id,
+        "title": LANG["sequence"],
+        "authref": URL["author"],
+        "seqref": URL["seq"],
+        "layout": "sequence"
+    }
+    return seq_books(params)

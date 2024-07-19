@@ -8,6 +8,7 @@ from .internals import URL
 
 from .views_internals import view_main, view_auth_root, view_auth_sub, view_author, view_author_alphabet
 from .views_internals import view_author_time, view_author_seqs, view_author_seq, view_author_nonseq
+from .views_internals import view_seq_root, view_seq_sub, view_seq
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -150,46 +151,46 @@ def html_author_time(sub1, sub2, auth_id):
     return resp
 
 
-# @html.route(URL["seqidx"].replace("/opds", "/html", 1), methods=['GET'])
-# def html_seq_root():
-    # """sequences root (letters list)"""
-    # data = view_seq_root()
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_root.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["seqidx"].replace("/opds", "/html", 1), methods=['GET'])
+def html_seq_root():
+    """sequences root (letters list)"""
+    data = view_seq_root()
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_root.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @html.route(URL["seqidx"].replace("/opds", "/html", 1) + "<sub>", methods=['GET'])
-# def html_seq_sub(sub):
-    # """three-letters links to lists or lists of sequences"""
-    # data = view_seq_sub(sub)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_list_linecnt.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["seqidx"].replace("/opds", "/html", 1) + "<sub>", methods=['GET'])
+def html_seq_sub(sub):
+    """three-letters links to lists or lists of sequences"""
+    data = view_seq_sub(sub)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_list_linecnt.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @html.route(URL["seq"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<seq_id>", methods=['GET'])
-# def html_seq(sub1, sub2, seq_id):
-    # """list books in sequence"""
-    # data = view_seq(sub1, sub2, seq_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["seq"].replace("/opds", "/html", 1) + "<sub1>/<sub2>/<seq_id>", methods=['GET'])
+def html_seq(sub1, sub2, seq_id):
+    """list books in sequence"""
+    data = view_seq(sub1, sub2, seq_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @html.route(URL["genidx"].replace("/opds", "/html", 1), methods=['GET'])

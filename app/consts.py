@@ -41,14 +41,21 @@ URL = {
 }
 
 LANG = {
+    "book_dl": "Скачать",
+    "book_read": "Читать онлайн",
+    "books_num": "%d книг(и)",
+
     "authors": "Авторы",
     "auth_root_subtitle": "Авторы на ",
     "author": "Автор ",
     "author_tpl": "Автор '%s'",
     "authors_num": "%d авт.",
-    "book_dl": "Скачать",
-    "book_read": "Читать онлайн",
-    "books_num": "%d книг(и)"
+
+    "sequences": "Серии",
+    "seq_root_subtitle": "Серии на ",
+    "sequence": "Серия ",
+    "seq_tpl": "Серия '%s'",
+    "seqs_num": "%d сер."
 }
 
 cover_names = [

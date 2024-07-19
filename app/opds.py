@@ -5,7 +5,7 @@
 import json
 import urllib
 
-# from functools import cmp_to_key
+from functools import cmp_to_key
 from flask import current_app
 
 # pylint: disable=E0402,C0209
@@ -16,7 +16,7 @@ from .internals import get_book_link
 # from .internals import get_books_seqs
 # from .internals import unicode_upper, pubinfo_anno
 # from .internals import custom_alphabet_sort, custom_alphabet_name_cmp, custom_alphabet_book_title_cmp
-from .internals import custom_alphabet_sort, pubinfo_anno
+from .internals import custom_alphabet_sort, custom_alphabet_name_cmp, custom_alphabet_cmp, pubinfo_anno
 from .consts import URL, OPDS, LANG
 
 # from .db import dbconnect, quote_string
@@ -69,6 +69,7 @@ def str_list(params):
     except Exception as e:
         print(e)
         return ret
+
     data_sorted = custom_alphabet_sort(data)
     for d in data_sorted:
         ret["feed"]["entry"].append(
@@ -123,21 +124,31 @@ def strnum_list(params):
     except Exception as e:
         print(e)
         return ret
-    data_sorted = data  # use sort from datachew
+    # data_sorted = data  # use sort from datachew
+
+    data_middle = []
+    for k in sorted(data.keys(), key=cmp_to_key(custom_alphabet_cmp)):
+        data_middle.append({"id": k, "name": data[k]})
+
+    if layout != "simple":
+        data_sorted = sorted(data_middle, key=cmp_to_key(custom_alphabet_name_cmp))
+    else:
+        data_sorted = data_middle
+
     for d in data_sorted:
         if layout == "simple":
-            href = approot + baseref + urllib.parse.quote(d)
-            linetitle = d
-            text = tpl % data[d]
+            href = approot + baseref + urllib.parse.quote(d["id"])
+            linetitle = d["id"]
+            text = tpl % d["name"]
         else:
-            href = approot + baseref + urllib.parse.quote(id2path(d))
-            linetitle = data[d]
-            text = tpl % data[d]
+            href = approot + baseref + urllib.parse.quote(id2path(d["id"]))
+            linetitle = d["name"]
+            text = tpl % d["name"]
 
         ret["feed"]["entry"].append(
             {
                 "updated": dtiso,
-                "id": subtag + urllib.parse.quote(d),
+                "id": subtag + urllib.parse.quote(d["id"]),
                 "title": linetitle,
                 "content": {
                     "@type": "text",
