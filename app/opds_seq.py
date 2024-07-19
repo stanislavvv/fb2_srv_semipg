@@ -60,5 +60,5 @@ def seq_books(params):
     data = sorted(data_seq, key=lambda s: s["seq_num"] or -1)
 
     for book in data:
-        ret["feed"]["entry"].append(make_book_entry(book, dtiso, authref, seqref))
+        ret["feed"]["entry"].append(make_book_entry(book, dtiso, authref, seqref, seq_id=seq_id))
     return ret
