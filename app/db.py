@@ -218,7 +218,7 @@ class BookDBro():
     def get_seq_names(self, seq_ids):
         """get sequence name by id"""
         req_data = "', '".join(seq_ids)
-        current_app.logger.debug(BOOK_REQ["get_seq_names"] % seq_ids)
+        # current_app.logger.debug(BOOK_REQ["get_seq_names"] % seq_ids)
         self.cur.execute(BOOK_REQ["get_seq_names"] % req_data)
         data = self.cur.fetchall()
         return data
@@ -361,7 +361,7 @@ class BookDBro():
             s_terms.append("name ILIKE '%%%s%%'" % quote_string(trm))
         # sterms = ' OR '.join(s_terms)
         sterms = ' AND '.join(s_terms)
-        current_app.logger.debug(BOOK_REQ["search_seqname"] % (sterms, limit))
+        # current_app.logger.debug(BOOK_REQ["search_seqname"] % (sterms, limit))
         self.cur.execute(BOOK_REQ["search_seqname"] % (sterms, limit))
         data = self.cur.fetchall()
         # current_app.logger.debug("end")

@@ -12,6 +12,7 @@ from .views_internals import view_main, view_auth_root, view_auth_sub, view_auth
 from .views_internals import view_author_time, view_author_seqs, view_author_seq, view_author_nonseq
 from .views_internals import view_seq_root, view_seq_sub, view_seq
 from .views_internals import view_gen_root, view_gen_meta, view_genre
+from .views_internals import view_search, view_search_term
 
 from .consts import CACHE_TIME  # , CACHE_TIME_RND
 
@@ -191,54 +192,54 @@ def opds_genre(gen_id, page=0):
     # return resp
 
 
-# @opds.route(URL["search"], methods=['GET'])
-# def opds_search():
-    # """main search page"""
-    # data = view_search()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["search"], methods=['GET'])
+def opds_search():
+    """main search page"""
+    data = view_search()
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["srchauth"], methods=['GET'])
-# def opds_search_authors():
-    # """list of found authors"""
-    # data = view_search_authors()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["srchauth"], methods=['GET'])
+def opds_search_authors():
+    """list of found authors"""
+    data = view_search_term("byauthor")
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["srchseq"], methods=['GET'])
-# def opds_search_sequences():
-    # """list of found sequences"""
-    # data = view_search_sequences()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["srchseq"], methods=['GET'])
+def opds_search_sequences():
+    """list of found sequences"""
+    data = view_search_term("bysequence")
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["srchbook"], methods=['GET'])
-# def opds_search_books():
-    # """list of found books (search in book title)"""
-    # data = view_search_books()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["srchbook"], methods=['GET'])
+def opds_search_books():
+    """list of found books (search in book title)"""
+    data = view_search_term("bytitle")
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @opds.route(URL["srchbookanno"], methods=['GET'])
-# def opds_search_books_anno():
-    # """list of found books (search in annotation)"""
-    # data = view_search_books_anno()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["srchbookanno"], methods=['GET'])
+def opds_search_books_anno():
+    """list of found books (search in annotation)"""
+    data = view_search_term("byanno")
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 # @opds.route(URL["rndgenidx"], methods=['GET'])

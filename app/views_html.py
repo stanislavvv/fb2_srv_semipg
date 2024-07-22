@@ -281,18 +281,18 @@ def html_search():
     return resp
 
 
-# @html.route(URL["srchauth"].replace("/opds", "/html", 1), methods=['GET'])
-# def html_search_authors():
-    # """list of found authors"""
-    # data = view_search_authors()
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_root.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["srchauth"].replace("/opds", "/html", 1), methods=['GET'])
+def html_search_authors():
+    """list of found authors"""
+    data = view_search_term("byauthor")
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_root.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
 @html.route(URL["srchseq"].replace("/opds", "/html", 1), methods=['GET'])

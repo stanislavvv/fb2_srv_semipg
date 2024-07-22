@@ -9,7 +9,7 @@ import logging
 from flask import current_app
 
 from .consts import URL
-from .internals import get_dtiso, url_str, get_books_descr
+from .internals import get_dtiso, url_str, get_books_descr, unicode_upper, id2path
 from .opds import ret_hdr, make_book_entry, make_seq_entry, add_link
 from .db import dbconnect
 
@@ -31,7 +31,7 @@ def search_main(s_term: str, tag: str, title: str, self: str, upref: str):
         ret["feed"]["entry"].append(
           {
             "updated": dtiso,
-            "id": "tag:search:authors::",
+            "id": "tag:search:authors:",
             "title": "Поиск в именах авторов",
             "content": {
               "@type": "text",
@@ -46,7 +46,7 @@ def search_main(s_term: str, tag: str, title: str, self: str, upref: str):
         ret["feed"]["entry"].append(
           {
             "updated": dtiso,
-            "id": "tag:search:sequences::",
+            "id": "tag:search:sequences:",
             "title": "Поиск в сериях",
             "content": {
               "@type": "text",
@@ -61,7 +61,7 @@ def search_main(s_term: str, tag: str, title: str, self: str, upref: str):
         ret["feed"]["entry"].append(
           {
             "updated": dtiso,
-            "id": "tag:search:booktitles::",
+            "id": "tag:search:booktitles:",
             "title": "Поиск в названиях книг",
             "content": {
               "@type": "text",
@@ -76,7 +76,7 @@ def search_main(s_term: str, tag: str, title: str, self: str, upref: str):
         ret["feed"]["entry"].append(
           {
             "updated": dtiso,
-            "id": "tag:search:booktitles::",
+            "id": "tag:search:bookanno:",
             "title": "Поиск в аннотациях книг",
             "content": {
               "@type": "text",
@@ -198,6 +198,17 @@ def search_term(params):
                         "name": seq[1],
                         "cnt": 0
                     })
+            elif restype == "auth":
+                dbdata = db_conn.get_search_authors(s_terms, maxres)
+                for auth in dbdata:
+                    data.append({
+                        "id": auth[0],
+                        "name": auth[1]
+                    })
+            if restype in ("auth", "seq"):
+                data = sorted(data, key=lambda s: unicode_upper(s["name"]) or -1)
+            elif restype == "book":
+                data = sorted(data, key=lambda s: unicode_upper(s["book_title"]) or -1)
         except Exception as ex:  # pylint: disable=W0703
             logging.error(ex)
 
@@ -210,5 +221,23 @@ def search_term(params):
             elif restype == "seq":
                 ret["feed"]["entry"].append(
                     make_seq_entry(i, dtiso, subtag, authref, baseref)
+                )
+            elif restype == "auth":
+                name = i["name"]
+                auth_id = i["id"]
+                ret["feed"]["entry"].append(
+                    {
+                        "updated": dtiso,
+                        "id": subtag + urllib.parse.quote(auth_id),
+                        "title": name,
+                        "content": {
+                            "@type": "text",
+                            "#text": name
+                        },
+                        "link": {
+                            "@href": approot + baseref + id2path(auth_id),
+                            "@type": "application/atom+xml;profile=opds-catalog"
+                        }
+                    }
                 )
     return ret

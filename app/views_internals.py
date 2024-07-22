@@ -323,7 +323,7 @@ def view_search_term(direction):
         params["subtag"] = "tag:author:"
         params["baseref"] = URL["author"]
         params["title"] = "Поиск среди авторов по '" + s_term + "'"
-        params["restype"] = "authors"
+        params["restype"] = "auth"
     elif direction == "bysequence":
         params["self"] = URL["srchseq"]
         params["tag"] = "tag:search:sequences:"
