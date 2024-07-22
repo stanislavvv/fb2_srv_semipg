@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 """library internal functions for opds/html views"""
 
-# from flask import request
+from flask import request
 
 # pylint: disable=E0402,C0209
 from .opds import main_opds, str_list, strnum_list
 from .opds_auth import auth_main, auth_books
 from .opds_seq import seq_books
 from .opds_gen import genre_books
-from .validate import validate_prefix, validate_id, validate_genre_meta, validate_genre, redir_invalid
+from .opds_search import search_main, search_term
+from .validate import validate_prefix, validate_id, validate_genre_meta
+from .validate import validate_genre, validate_search, redir_invalid
 from .internals import get_meta_name, get_genre_name
 from .consts import LANG, URL
 
@@ -291,3 +293,56 @@ def view_genre(gen_id, page):
         "page": page
     }
     return genre_books(params)
+
+
+def view_search():
+    """main search page data"""
+    s_term = request.args.get('searchTerm')
+    s_term = validate_search(s_term)
+    self = URL["search"]
+    upref = URL["start"]
+    tag = "tag:search::"
+    title = "Поиск по '" + s_term + "'"
+    data = search_main(s_term, tag, title, self, upref)
+    return data
+
+
+def view_search_term(direction):
+    """genre/id/page"""
+    s_term = request.args.get('searchTerm')
+    s_term = validate_search(s_term)
+    params = {
+        "search_term": s_term,
+        "upref": URL["start"],
+        "authref": URL["author"],
+        "seqref": URL["seq"]
+    }
+    if direction == "byauthor":
+        params["self"] = URL["srchauth"]
+        params["tag"] = "tag:search:authors:"
+        params["subtag"] = "tag:author:"
+        params["baseref"] = URL["author"]
+        params["title"] = "Поиск среди авторов по '" + s_term + "'"
+        params["restype"] = "authors"
+    elif direction == "bysequence":
+        params["self"] = URL["srchseq"]
+        params["tag"] = "tag:search:sequences:"
+        params["subtag"] = "tag:sequence:"
+        params["baseref"] = URL["seq"]
+        params["title"] = "Поиск среди серий по '" + s_term + "'"
+        params["restype"] = "seq"
+    elif direction == "bytitle":
+        params["self"] = URL["srchbook"]
+        params["tag"] = "tag:search:books:"
+        params["subtag"] = "tag:book:"
+        params["baseref"] = URL["author"]
+        params["title"] = "Поиск среди книг по '" + s_term + "'"
+        params["restype"] = "book"
+    else:  # annotation by default
+        params["self"] = URL["srchbook"]
+        params["tag"] = "tag:search:books:"
+        params["subtag"] = "tag:book:"
+        params["baseref"] = URL["author"]
+        params["title"] = "Поиск среди книг по '" + s_term + "'"
+        params["restype"] = "bookanno"
+    return search_term(params)

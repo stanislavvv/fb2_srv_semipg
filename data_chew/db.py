@@ -18,7 +18,7 @@ def sarray2pg(arr):
     rarr = []
     for elem in arr:
         rarr.append("'%s'" % str(elem))
-    return "ARRAY [%s]" % ",".join(rarr)
+    return "ARRAY [%s]::varchar[]" % ",".join(rarr)
 
 
 def bdatetime2date(date_time):

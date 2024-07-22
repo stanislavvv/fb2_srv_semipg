@@ -51,7 +51,7 @@ class BookDBro():
         self.cur = self.conn.cursor()
         self.__get_genres_meta()
         self.__get_genres()
-        current_app.logger.debug("connected to db")
+        # current_app.logger.debug("connected to db")
 
     def __get_genres_meta(self):
         """init genres meta dict"""
@@ -77,10 +77,10 @@ class BookDBro():
 
     def get_genre_names(self):
         """get ALL genre names with id"""
-        current_app.logger.debug(BOOK_REQ["get_genre_names"])
+        # current_app.logger.debug(BOOK_REQ["get_genre_names"])
         self.cur.execute(BOOK_REQ["get_genre_names"])
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     # def get_book_authors(self, book_id):
@@ -119,19 +119,19 @@ class BookDBro():
 
     def get_book_descr(self, book_id):
         """get title/annotation/publication for one book"""
-        current_app.logger.debug(BOOK_REQ["get_book_descr"] % book_id)
+        # current_app.logger.debug(BOOK_REQ["get_book_descr"] % book_id)
         self.cur.execute(BOOK_REQ["get_book_descr"] % book_id)
         data = self.cur.fetchone()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_books_descr(self, book_ids):
         """get title/annotation/publication for many book"""
         req_data = "', '".join(book_ids)
-        current_app.logger.debug(BOOK_REQ["get_books_descr"] % req_data)
+        # current_app.logger.debug(BOOK_REQ["get_books_descr"] % req_data)
         self.cur.execute(BOOK_REQ["get_books_descr"] % req_data)
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     # def get_authors_one(self):
@@ -165,6 +165,15 @@ class BookDBro():
         # data = self.cur.fetchall()
         # current_app.logger.debug("end")
         # return data
+
+    def get_authors(self, auth_ids):
+        """get author by id"""
+        req_data = "', '".join(auth_ids)
+        # current_app.logger.debug(BOOK_REQ["get_authors"] % req_data)
+        self.cur.execute(BOOK_REQ["get_authors"] % req_data)
+        data = self.cur.fetchall()
+        # current_app.logger.debug("end")
+        return data
 
     # def get_author_seqs(self, auth_id):
         # """get book sequences of author"""
@@ -200,11 +209,19 @@ class BookDBro():
 
     def get_seq_name(self, seq_id):
         """get sequence name by id"""
-        current_app.logger.debug(BOOK_REQ["get_seq_name"] % seq_id)
+        # current_app.logger.debug(BOOK_REQ["get_seq_name"] % seq_id)
         self.cur.execute(BOOK_REQ["get_seq_name"] % seq_id)
         data = self.cur.fetchone()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data[0]
+
+    def get_seq_names(self, seq_ids):
+        """get sequence name by id"""
+        req_data = "', '".join(seq_ids)
+        current_app.logger.debug(BOOK_REQ["get_seq_names"] % seq_ids)
+        self.cur.execute(BOOK_REQ["get_seq_names"] % req_data)
+        data = self.cur.fetchall()
+        return data
 
     # def get_seqs_one(self):
         # """get first letters of all sequences"""
@@ -248,10 +265,10 @@ class BookDBro():
 
     def get_meta_name(self, meta_id):
         """get genre meta name by id"""
-        current_app.logger.debug(BOOK_REQ["get_meta_name"] % meta_id)
+        # current_app.logger.debug(BOOK_REQ["get_meta_name"] % meta_id)
         self.cur.execute(BOOK_REQ["get_meta_name"] % meta_id)
         data = self.cur.fetchone()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     # def get_genres_meta(self):
@@ -280,35 +297,35 @@ class BookDBro():
 
     def get_rnd_books(self, limit):
         """get random books"""
-        current_app.logger.debug(BOOK_REQ["get_rnd_books"] % limit)
+        # current_app.logger.debug(BOOK_REQ["get_rnd_books"] % limit)
         self.cur.execute(BOOK_REQ["get_rnd_books"] % limit)
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_rnd_seqs(self, limit):
         """get random sequences"""
-        current_app.logger.debug(BOOK_REQ["get_rnd_seqs"] % limit)
+        # current_app.logger.debug(BOOK_REQ["get_rnd_seqs"] % limit)
         self.cur.execute(BOOK_REQ["get_rnd_seqs"] % limit)
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_rnd_genre_books(self, gen_id, limit):
         """get random books in genre"""
-        current_app.logger.debug(BOOK_REQ["get_genre_rndbooks"] % (gen_id, limit))
+        # current_app.logger.debug(BOOK_REQ["get_genre_rndbooks"] % (gen_id, limit))
         self.cur.execute(BOOK_REQ["get_genre_rndbooks"] % (gen_id, limit))
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_books_byids(self, book_ids):
         """get books data by list of ids"""
         req_data = "', '".join(book_ids)
-        current_app.logger.debug(BOOK_REQ["get_books_byids"] % req_data)
+        # current_app.logger.debug(BOOK_REQ["get_books_byids"] % req_data)
         self.cur.execute(BOOK_REQ["get_books_byids"] % req_data)
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_search_titles(self, terms, limit):
@@ -316,11 +333,12 @@ class BookDBro():
         s_terms = []
         for trm in terms:
             s_terms.append("book_title ILIKE '%%%s%%'" % quote_string(trm))
-        sterms = ' OR '.join(s_terms)
-        current_app.logger.debug(BOOK_REQ["search_booktitle"] % (sterms, limit))
+        # sterms = ' OR '.join(s_terms)
+        sterms = ' AND '.join(s_terms)
+        # current_app.logger.debug(BOOK_REQ["search_booktitle"] % (sterms, limit))
         self.cur.execute(BOOK_REQ["search_booktitle"] % (sterms, limit))
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_search_anno(self, terms, limit):
@@ -328,11 +346,12 @@ class BookDBro():
         s_terms = []
         for trm in terms:
             s_terms.append("annotation ILIKE '%%%s%%'" % quote_string(trm))
-        sterms = ' OR '.join(s_terms)
-        current_app.logger.debug(BOOK_REQ["search_bookanno"] % (sterms, limit))
+        # sterms = ' OR '.join(s_terms)
+        sterms = ' AND '.join(s_terms)
+        # current_app.logger.debug(BOOK_REQ["search_bookanno"] % (sterms, limit))
         self.cur.execute(BOOK_REQ["search_bookanno"] % (sterms, limit))
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_search_seqs(self, terms, limit):
@@ -340,11 +359,12 @@ class BookDBro():
         s_terms = []
         for trm in terms:
             s_terms.append("name ILIKE '%%%s%%'" % quote_string(trm))
-        sterms = ' OR '.join(s_terms)
+        # sterms = ' OR '.join(s_terms)
+        sterms = ' AND '.join(s_terms)
         current_app.logger.debug(BOOK_REQ["search_seqname"] % (sterms, limit))
         self.cur.execute(BOOK_REQ["search_seqname"] % (sterms, limit))
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_search_authors(self, terms, limit):
@@ -352,19 +372,20 @@ class BookDBro():
         s_terms = []
         for trm in terms:
             s_terms.append("name ILIKE '%%%s%%'" % quote_string(trm))
-        sterms = ' OR '.join(s_terms)
-        current_app.logger.debug(BOOK_REQ["search_author"] % (sterms, limit))
+        # sterms = ' OR '.join(s_terms)
+        sterms = ' AND '.join(s_terms)
+        # current_app.logger.debug(BOOK_REQ["search_author"] % (sterms, limit))
         self.cur.execute(BOOK_REQ["search_author"] % (sterms, limit))
         data = self.cur.fetchall()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
     def get_book_cover(self, book_id):
         """return image with type"""
-        current_app.logger.debug(BOOK_REQ["get_cover_data"] % book_id)
+        # current_app.logger.debug(BOOK_REQ["get_cover_data"] % book_id)
         self.cur.execute(BOOK_REQ["get_cover_data"] % book_id)
         data = self.cur.fetchone()
-        current_app.logger.debug("end")
+        # current_app.logger.debug("end")
         return data
 
 

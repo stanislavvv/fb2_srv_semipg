@@ -31,6 +31,7 @@ def process_list_books_batch_db(db, booklist, stage, hide_deleted=False):  # pyl
         lines = lst.readlines(PASS_SIZE_HINT)
         while len(lines) > 0:
             count = count + len(lines)
+            # print("   %s" % count)
             logging.info("   %s", count)
             process_books_batch(db, lines, stage, hide_deleted)
             db.commit()
@@ -74,6 +75,7 @@ def process_books_batch(db, booklines, stage, hide_deleted=False):  # pylint: di
         for author in book["authors"]:
             auth_id = author["id"]
             authors[auth_id] = author
+    # print("     skip deleted books: %d" % deleted_cnt)
     logging.debug("     skip deleted books: %d", deleted_cnt)
     db.cur.execute("SELECT book_id FROM books WHERE book_id IN ('%s');" % "','".join(book_ids))
     ret = db.cur.fetchall()
@@ -88,16 +90,19 @@ def process_books_batch(db, booklines, stage, hide_deleted=False):  # pylint: di
 
     if len(seqs) > 0:
         # logging.debug("sequences...")
+        # print("sequences: %d" % len(seqs))
         req = make_insert_seqs(db, seqs)
         if req != "" and len(req) > 10:
             db.cur.execute(req)
 
     if len(genres.keys()) > 0:
         # logging.debug("genres...")
+        # print("genres: %d" % len(genres))
         insert_genres(db, genres.keys())
 
     if len(authors) > 0:
         # logging.debug("authors...")
+        # print("authors: %d" % len(authors))
         req = make_insert_authors(db, authors)
         # logging.debug(req)
         if req != "":
@@ -105,13 +110,15 @@ def process_books_batch(db, booklines, stage, hide_deleted=False):  # pylint: di
 
     if len(book_insert) > 0:
         # logging.debug("books...")
+        # print("books: %d" % len(books))
         req = make_inserts(db, book_insert)
         # logging.debug(req)
         if req != "":
             db.cur.execute(req)
 
     if len(book_update) > 0 and stage == "fillall":
-        logging.debug("books for update: %s...", len(book_update))
+        # print("books for update: %d..." % len(book_update))
+        logging.debug("books for update: %d...", len(book_update))
         req = make_updates(db, book_update)
         # logging.debug(req)
         if req != "":
@@ -197,16 +204,30 @@ def make_updates(db, books):  # pylint: disable=C0103
     return "".join(inserts)
 
 
+def get_ids(data):
+    """return id fields array"""
+    ret = []
+    if data is not None:
+        for i in data:
+            if "id" in i:
+                ret.append(i["id"])
+    return ret
+
+
 def make_insert_book(db, book):  # pylint: disable=C0103,R0912,R0914,R0915,R1702
     """return inserts for book"""
     req = []
     global authors_seqs  # pylint: disable=W0602,W0603,C0103
     gnrs = sarray2pg(book["genres"])
+    authors = sarray2pg(get_ids(book["authors"]))
+    seqs = sarray2pg(get_ids(book["sequences"]))
     bdate = bdatetime2date(book["date_time"])
     book_ins = (
         book["zipfile"],
         book["filename"],
         gnrs,
+        authors,
+        seqs,
         book["book_id"],
         book["lang"],
         bdate,
@@ -224,7 +245,6 @@ def make_insert_book(db, book):  # pylint: disable=C0103,R0912,R0914,R0915,R1702
         cover_ctype = cover["content-type"]
         cover_data = cover["data"]
         req.append(INSERT_REQ["cover"] % (book_id, cover_ctype, cover_data))
-
     return "".join(req)
 
 

@@ -213,6 +213,9 @@ BOOK_REQ = {
     "get_author": """
         SELECT id, name, info FROM authors WHERE id = '%s';
     """,
+    "get_authors": """
+        SELECT id, name, info FROM authors WHERE id IN ('%s');
+    """,
     "get_auth_seqs": """
         SELECT id, name, cnt
         FROM sequences
@@ -293,6 +296,9 @@ BOOK_REQ = {
     "get_seq_name": """
         SELECT name FROM sequences WHERE id = '%s';
     """,
+    "get_seq_names": """
+        SELECT id, name FROM sequences WHERE id IN ('%s');
+    """,
     "get_genres_meta": """
         SELECT meta_id, name FROM genres_meta ORDER BY name;
     """,
@@ -335,7 +341,7 @@ BOOK_REQ = {
         OFFSET %s;
     """,
     "get_books_byids": """
-        SELECT zipfile, filename, genres, book_id, lang, date, size, deleted FROM books
+        SELECT zipfile, filename, genres, authors, sequences, book_id, lang, date, size, deleted FROM books
         WHERE book_id IN ('%s')
     """,
     "get_cover_data": """
@@ -347,9 +353,12 @@ BOOK_REQ = {
     "search_bookanno": """
         SELECT book_id FROM books_descr WHERE %s LIMIT %s;
     """,
+    # "search_seqname": """
+    #     SELECT id, name, count(*) AS cnt FROM sequences INNER JOIN seq_books ON sequences.id = seq_books.seq_id
+    #     WHERE %s GROUP BY id, name LIMIT %s;
+    # """,
     "search_seqname": """
-        SELECT id, name, count(*) AS cnt FROM sequences INNER JOIN seq_books ON sequences.id = seq_books.seq_id
-        WHERE %s GROUP BY id, name LIMIT %s;
+        SELECT id, name FROM sequences WHERE %s GROUP BY id LIMIT %s;
     """,
     "search_author": """
         SELECT id, name FROM authors WHERE %s GROUP BY id, name LIMIT %s;

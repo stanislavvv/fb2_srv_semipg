@@ -17,15 +17,22 @@ tags for pages:
   * [?] -- unknown
 
 ## common:
+DONE
+
   * `/` -- app root page, redirect to `/html/` (or make page with some info?) [int]
   * `/opds/` -- library root, opds interface (`s/opds/html/` for web interface) [int]
 
 ## static and books access:
+DONE
+
   * `/fb2/<zip_file>/<filename>` -- book as is (fb2) [zip]
   * `/read/<zip_file>/<filename>` -- book in html [zip]
   * `/st/<filename>` -- static app files [int]
+  * `/conver/<book_id>/jpg` -- book cover image [db][file]
 
 ## authors:
+DONE
+
   * `/opds/authorsindex/` -- alphabet of authors names first letters [file]
   * `/opds/authorsindex/<sub>` -- three letters list (one-letter sub) and authors list (three-letter sub) [file]
   * `/opds/author/<sub1>/<sub2>/<id>` -- author's page [file]
@@ -36,11 +43,15 @@ tags for pages:
   * `/opds/author/<sub1>/<sub2>/<id>/time` -- all books of author sort by time [file][db]
 
 ## sequences:
+DONE
+
   * `/opds/sequencesindex/` -- alphabet of sequences names first letters [file]
   * `/opds/sequencesindex/<sub>` -- three letters list (one-letter sub) and sequences list (three-letter sub) [file]
   * `/opds/sequence/<sub1>/<sub2>/<id>` -- books in sequence [file]
 
 ## genres:
+DONE
+
   * `/opds/genresindex/` -- genres meta list [file]
   * `/opds/genresindex/<sub>` -- genres list in meta "sub" [file]
   * `/opds/genre/<id>`, `/opds/genre/<id>/<page>` -- books in genres [file]|[db]?

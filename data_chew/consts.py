@@ -12,6 +12,8 @@ CREATE_REQ = [
         zipfile	varchar NOT NULL,
         filename	varchar NOT NULL,
         genres	varchar ARRAY,
+        authors varchar ARRAY,
+        sequences varchar ARRAY,
         book_id	char(32) UNIQUE,
         lang	    varchar,
         date	    date,
@@ -97,8 +99,8 @@ CREATE_REQ = [
 
 INSERT_REQ = {
     "books": """
-        INSERT INTO books(zipfile, filename, genres, book_id, lang, date, size, deleted)
-        VALUES ('%s', '%s', %s, '%s', '%s', '%s', %s, CAST (%s AS boolean));
+        INSERT INTO books(zipfile, filename, genres, authors, sequences, book_id, lang, date, size, deleted)
+        VALUES ('%s', '%s', %s, %s, %s, '%s', '%s', '%s', %s, CAST (%s AS boolean));
     """,
     "book_replace": """
         UPDATE books SET zipfile = '%s', filename = '%s', genres = %s,
