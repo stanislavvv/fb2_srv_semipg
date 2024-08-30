@@ -6,9 +6,9 @@ import json
 from functools import cmp_to_key
 from flask import current_app
 
-from .consts import URL
+from .consts import URL, LANG
 from .internals import get_dtiso, id2path, custom_alphabet_book_title_cmp, unicode_upper
-from .internals import custom_alphabet_name_cmp
+from .internals import custom_alphabet_name_cmp, get_seq_name
 from .opds import ret_hdr, add_link, make_book_entry, make_seq_entry
 # pylint: disable=C0103,R1702,R1705,R0912
 
@@ -33,13 +33,13 @@ def auth_main(params):  # pylint: disable=R0914
     try:
         with open(workfile) as nm:
             auth_data = json.load(nm)
-            auth_name = "'" + auth_data["name"] + "'"
+            auth_name = auth_data["name"]
     except Exception as e:  # pylint: disable=W0703
         print(e)
         auth_name = ""
     ret = ret_hdr()
     ret["feed"]["updated"] = dtiso
-    ret["feed"]["title"] = title + auth_name
+    ret["feed"]["title"] = title % auth_name
     ret["feed"]["id"] = tag
     ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
     ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
@@ -131,14 +131,20 @@ def auth_books(params):  # pylint: disable=R0914,R0915
     try:
         with open(workfile) as nm:
             auth_data = json.load(nm)
-            auth_name = "'" + auth_data["name"] + "'"
+            auth_name = auth_data["name"]
     except Exception as e:  # pylint: disable=W0703
         print(e)
         auth_name = ""
 
+    if layout == "sequence":
+        seq_name = get_seq_name(params["seq_id"])
+        full_title = title % (seq_name, auth_name)
+    else:
+        full_title = title % auth_name
+
     ret = ret_hdr()
     ret["feed"]["updated"] = dtiso
-    ret["feed"]["title"] = title + auth_name
+    ret["feed"]["title"] = full_title
     ret["feed"]["id"] = tag
     ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
     ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")

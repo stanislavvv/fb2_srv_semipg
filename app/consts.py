@@ -44,6 +44,10 @@ LANG = {
     "book_dl": "Скачать",
     "book_read": "Читать онлайн",
     "books_num": "%d книг(и)",
+    "books_author_alphabet": "Книги автора '%s' по алфавиту",
+    "books_author_time": "Книги автора '%s' по времени поступления",
+    "books_author_nonseq": "Книги автора '%s' вне серий",
+    "books_author_seq": "Серия '%s', автор '%s'",
 
     "authors": "Авторы",
     "auth_root_subtitle": "Авторы на ",
@@ -56,6 +60,7 @@ LANG = {
     "sequence": "Серия ",
     "seq_tpl": "Серия '%s'",
     "seqs_num": "%d сер.",
+    "seqs_author": "Серии автора '%s'",
 
     "genres_meta": "Группы жанров",
     "genres": "Жанры",

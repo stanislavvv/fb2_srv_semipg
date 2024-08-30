@@ -76,7 +76,7 @@ def view_author(sub1, sub2, auth_id):
         "self": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
         "upref": URL["authidx"],
         "tag": "tag:root:author:" + auth_id,
-        "title": LANG["author"],
+        "title": LANG["author_tpl"],
         "authref": URL["author"],
         "seqref": URL["seq"]
     }
@@ -95,7 +95,7 @@ def view_author_alphabet(sub1, sub2, auth_id):
         "self": URL["author"] + "%s/%s/%s/alphabet" % (sub1, sub2, auth_id),
         "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
         "tag": "tag:root:author:" + auth_id + ":alphabet",
-        "title": LANG["author"],
+        "title": LANG["books_author_alphabet"],
         "authref": URL["author"],
         "seqref": URL["seq"],
         "layout": "alphabet"
@@ -115,7 +115,7 @@ def view_author_time(sub1, sub2, auth_id):
         "self": URL["author"] + "%s/%s/%s/time" % (sub1, sub2, auth_id),
         "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
         "tag": "tag:root:author:" + auth_id + ":time",
-        "title": LANG["author"],
+        "title": LANG["books_author_time"],
         "authref": URL["author"],
         "seqref": URL["seq"],
         "layout": "time"
@@ -135,7 +135,7 @@ def view_author_seqs(sub1, sub2, auth_id):
         "self": URL["author"] + "%s/%s/%s/sequences" % (sub1, sub2, auth_id),
         "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
         "tag": "tag:root:author:" + auth_id + ":sequences",
-        "title": LANG["author"],
+        "title": LANG["seqs_author"],
         "authref": URL["author"],
         "seqref": URL["seq"],
         "layout": "sequences"
@@ -156,7 +156,7 @@ def view_author_seq(sub1, sub2, auth_id, seq_id):
         "self": URL["author"] + "%s/%s/%s/%s" % (sub1, sub2, auth_id, seq_id),
         "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
         "tag": "tag:root:author:" + auth_id + ":sequence:" + seq_id,
-        "title": LANG["author"],
+        "title": LANG["books_author_seq"],
         "authref": URL["author"],
         "seqref": URL["seq"],
         "layout": "sequence"
@@ -176,7 +176,7 @@ def view_author_nonseq(sub1, sub2, auth_id):
         "self": URL["author"] + "%s/%s/%s/sequences" % (sub1, sub2, auth_id),
         "upref": URL["author"] + "%s/%s/%s" % (sub1, sub2, auth_id),
         "tag": "tag:root:author:" + auth_id + ":sequences",
-        "title": LANG["author"],
+        "title": LANG["books_author_nonseq"],
         "authref": URL["author"],
         "seqref": URL["seq"],
         "layout": "sequenceless"
