@@ -11,6 +11,7 @@ from .views_internals import view_author_time, view_author_seqs, view_author_seq
 from .views_internals import view_seq_root, view_seq_sub, view_seq
 from .views_internals import view_gen_root, view_gen_meta, view_genre
 from .views_internals import view_search, view_search_term, view_random_books, view_random_seqs
+from .views_internals import view_rnd_gen_root, view_rnd_gen_meta, view_rnd_genre
 
 from .consts import CACHE_TIME, CACHE_TIME_RND
 
@@ -337,46 +338,46 @@ def html_search_books_anno():
     return resp
 
 
-# @html.route(URL["rndgenidx"].replace("/opds", "/html", 1), methods=['GET'])
-# def html_rnd_gen_root():
-    # """genres meta list for random books in genre"""
-    # data = view_rnd_gen_root()
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_root.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["rndgenidx"].replace("/opds", "/html", 1), methods=['GET'])
+def html_rnd_gen_root():
+    """genres meta list for random books in genre"""
+    data = view_rnd_gen_root()
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_root.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @html.route(URL["rndgenidx"].replace("/opds", "/html", 1) + "<sub>", methods=['GET'])
-# def html_rnd_gen_meta(sub):
-    # """genres list for random books in genre"""
-    # data = view_rnd_gen_meta(sub)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_list_linecnt.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["rndgenidx"].replace("/opds", "/html", 1) + "<sub>", methods=['GET'])
+def html_rnd_gen_meta(sub):
+    """genres list for random books in genre"""
+    data = view_rnd_gen_meta(sub)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_list_linecnt.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp
 
 
-# @html.route(URL["rndgen"].replace("/opds", "/html", 1) + "<gen_id>", methods=['GET'])
-# def html_rnd_genre(gen_id):
-    # """random books in genre"""
-    # data = view_rnd_genre(gen_id)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME_RND
-    # return resp
+@html.route(URL["rndgen"].replace("/opds", "/html", 1) + "<gen_id>", methods=['GET'])
+def html_rnd_genre(gen_id):
+    """random books in genre"""
+    data = view_rnd_genre(gen_id)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME_RND
+    return resp
 
 
 # @html.route(URL["time"].replace("/opds", "/html", 1), methods=['GET'])

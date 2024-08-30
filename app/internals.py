@@ -5,6 +5,7 @@ import datetime
 import urllib
 import unicodedata as ud
 import logging
+import random
 
 from functools import cmp_to_key
 from bs4 import BeautifulSoup
@@ -363,4 +364,13 @@ def get_book_cover(book_id):
             ret = dbdata[0], dbdata[1]
     except Exception as ex:  # pylint: disable=W0703
         logging.error(ex)
+    return ret
+
+
+def get_randoms(num: int, maxrand: int):
+    """return random ints in 0...maxrand"""
+    ret = []
+    random.seed()
+    for i in range(0, num):
+        ret.append(random.randint(0, maxrand))
     return ret

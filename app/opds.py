@@ -58,9 +58,9 @@ def str_list(params, layout=None, sub=None):  # pylint: disable=R0914
     ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
 
     if sub is not None:
-        workfile = rootdir + idx.replace("/opds", "") + ".json"
+        workfile = rootdir + idx.replace("/opds", "").replace("rnd-", "") + ".json"
     else:
-        workdir = rootdir + idx.replace("/opds", "")
+        workdir = rootdir + idx.replace("/opds", "").replace("rnd-", "")
         workfile = workdir + "/index.json"
     try:
         with open(workfile) as jsfile:

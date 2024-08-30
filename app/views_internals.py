@@ -7,7 +7,7 @@ from flask import request
 from .opds import main_opds, str_list, strnum_list
 from .opds_auth import auth_main, auth_books
 from .opds_seq import seq_books
-from .opds_gen import genre_books
+from .opds_gen import genre_books, rnd_genre_books
 from .opds_search import search_main, search_term, random_books, random_seqs
 from .validate import validate_prefix, validate_id, validate_genre_meta
 from .validate import validate_genre, validate_search, redir_invalid
@@ -375,3 +375,52 @@ def view_random_seqs():
     }
     data = random_seqs(params)
     return data
+
+
+def view_rnd_gen_root():
+    """random genresindex/"""
+    params = {
+        "self": URL["rndgenidx"],
+        "baseref": URL["rndgenidx"],
+        "upref": URL["rndgenidx"],
+        "tag": "tag:rnd:genres",
+        "title": LANG["genres_meta"],
+        "subtag": "tag:rnd:genres:",
+        "subtitle": LANG["genres_root_subtitle"]
+    }
+    return str_list(params, layout="values")
+
+
+def view_rnd_gen_meta(sub):
+    """random genresindex/sub"""
+    sub = validate_genre_meta(sub)
+    meta_name = get_meta_name(sub)
+    if meta_name is not None:
+        params = {
+            "self": URL["rndgenidx"] + sub,
+            "baseref": URL["rndgen"],
+            "upref": URL["rndgenidx"],
+            "tag": "tag:rnd:genres:" + sub,
+            "title": LANG["genres_root_subtitle"] + "'" + meta_name + "'",
+            "subtag": "tag:rnd:genres:",
+            "subtitle": LANG["genres_root_subtitle"]
+        }
+        return str_list(params, layout="values", sub=sub)
+    return redir_invalid(REDIR_ALL)
+
+
+def view_rnd_genre(gen_id):
+    """random genre/id"""
+    gen_id = validate_genre(gen_id)
+    gen_name = get_genre_name(gen_id)
+    params = {
+        "id": gen_id,
+        "self": URL["rndgen"] + "%s" % gen_id,
+        "upref": URL["rndgenidx"],
+        "tag": "tag:rnd:genre:" + gen_id,
+        "title": LANG["rnd_genre_books"] % gen_name,
+        "authref": URL["author"],
+        "seqref": URL["seq"],
+        "name": gen_name
+    }
+    return rnd_genre_books(params)
