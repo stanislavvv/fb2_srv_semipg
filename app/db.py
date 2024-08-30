@@ -170,7 +170,7 @@ class BookDBro():
         """get author by id"""
         req_data = "', '".join(auth_ids)
         # current_app.logger.debug(BOOK_REQ["get_authors"] % req_data)
-        self.cur.execute(BOOK_REQ["get_authors"] % req_data)
+        self.cur.execute(BOOK_REQ["get_authors_byids"] % req_data)
         data = self.cur.fetchall()
         # current_app.logger.debug("end")
         return data

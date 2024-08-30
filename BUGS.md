@@ -1,3 +1,3 @@
 # Known bugs
 
-* Only author name in author's books lists
+* Only author name in author's books lists -- fixed

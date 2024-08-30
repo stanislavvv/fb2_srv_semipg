@@ -6,7 +6,7 @@ import json
 from functools import cmp_to_key
 from flask import current_app
 
-from .consts import URL, LANG
+from .consts import URL
 from .internals import get_dtiso, id2path, custom_alphabet_book_title_cmp, unicode_upper
 from .internals import custom_alphabet_name_cmp, get_seq_name
 from .opds import ret_hdr, add_link, make_book_entry, make_seq_entry

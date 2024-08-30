@@ -67,6 +67,14 @@ LANG = {
     "genre": "Жанр ",
     "genres_root_subtitle": "Жанры в группе ",
     "genre_tpl": "Жанр '%s'",
+
+    "search_main": "Поиск по '%s'",
+    "search_author": "Поиск среди авторов по '%s'",
+    "search_seq": "Поиск среди серий по '%s'",
+    "search_book": "Поиск по заголовкам книг по '%s'",
+    "search_anno": "Поиск по описаниям книг по '%s'",
+
+    "rnd_books": "Случайные книги",
 }
 
 cover_names = [
@@ -218,7 +226,7 @@ BOOK_REQ = {
     "get_author": """
         SELECT id, name, info FROM authors WHERE id = '%s';
     """,
-    "get_authors": """
+    "get_authors_byids": """
         SELECT id, name, info FROM authors WHERE id IN ('%s');
     """,
     "get_auth_seqs": """
@@ -247,7 +255,7 @@ BOOK_REQ = {
             );
     """,
     "get_rnd_books": """
-        SELECT zipfile, filename, genres, book_id, lang, date, size, deleted FROM books
+        SELECT book_id FROM books
         ORDER BY random() LIMIT %s;
     """,
     "get_book_authors": """

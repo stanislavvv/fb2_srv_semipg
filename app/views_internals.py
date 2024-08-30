@@ -8,7 +8,7 @@ from .opds import main_opds, str_list, strnum_list
 from .opds_auth import auth_main, auth_books
 from .opds_seq import seq_books
 from .opds_gen import genre_books
-from .opds_search import search_main, search_term
+from .opds_search import search_main, search_term, random_books
 from .validate import validate_prefix, validate_id, validate_genre_meta
 from .validate import validate_genre, validate_search, redir_invalid
 from .internals import get_meta_name, get_genre_name
@@ -302,7 +302,7 @@ def view_search():
     self = URL["search"]
     upref = URL["start"]
     tag = "tag:search::"
-    title = "Поиск по '" + s_term + "'"
+    title = LANG["search_main"] % s_term
     data = search_main(s_term, tag, title, self, upref)
     return data
 
@@ -322,27 +322,41 @@ def view_search_term(direction):
         params["tag"] = "tag:search:authors:"
         params["subtag"] = "tag:author:"
         params["baseref"] = URL["author"]
-        params["title"] = "Поиск среди авторов по '" + s_term + "'"
+        params["title"] = LANG["search_author"] % s_term
         params["restype"] = "auth"
     elif direction == "bysequence":
         params["self"] = URL["srchseq"]
         params["tag"] = "tag:search:sequences:"
         params["subtag"] = "tag:sequence:"
         params["baseref"] = URL["seq"]
-        params["title"] = "Поиск среди серий по '" + s_term + "'"
+        params["title"] = LANG["search_seq"] % s_term
         params["restype"] = "seq"
     elif direction == "bytitle":
         params["self"] = URL["srchbook"]
         params["tag"] = "tag:search:books:"
         params["subtag"] = "tag:book:"
         params["baseref"] = URL["author"]
-        params["title"] = "Поиск среди книг по '" + s_term + "'"
+        params["title"] = LANG["search_book"] % s_term
         params["restype"] = "book"
     else:  # annotation by default
         params["self"] = URL["srchbook"]
         params["tag"] = "tag:search:books:"
         params["subtag"] = "tag:book:"
         params["baseref"] = URL["author"]
-        params["title"] = "Поиск среди книг по '" + s_term + "'"
+        params["title"] = LANG["search_anno"] % s_term
         params["restype"] = "bookanno"
     return search_term(params)
+
+
+def view_random_books():
+    """random books"""
+    params = {
+        "self": URL["rndbook"],
+        "upref": URL["start"],
+        "tag": "tag:search:books:random:",
+        "title": LANG["rnd_books"],
+        "authref": URL["author"],
+        "seqref": URL["seq"]
+    }
+    data = random_books(params)
+    return data

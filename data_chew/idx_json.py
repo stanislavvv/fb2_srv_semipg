@@ -45,7 +45,7 @@ def process_lists(db, zipdir, pagesdir, stage, hide_deleted=False):
         pass
         gen_cnt = db.get_data("get_genres_cnt")[0][0]
         logging.info("Creating genres indexes (total: %s)..." % gen_cnt)
-        while(len(gen_processed) < gen_cnt):
+        while (len(gen_processed) < gen_cnt):
             make_gen_data(db, zipdir, pagesdir, hide_deleted)
             logging.debug(" - processed genres: %d/%d" % (len(gen_processed), gen_cnt))
         make_gen_subindexes(db, pagesdir)

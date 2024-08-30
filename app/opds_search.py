@@ -154,7 +154,7 @@ def search_term(params):
                     sequences = []
                     if len(seq_ids) > 0:
                         book_seq_data = db_conn.get_seq_names(seq_ids)
-                        print(book_seq_data)
+
                         for seq in book_seq_data:
                             seq_id = seq[0]
                             seq_name = seq[1]
@@ -240,4 +240,105 @@ def search_term(params):
                         }
                     }
                 )
+    return ret
+
+
+def random_books(params):
+    """return random books struct"""
+    dtiso = get_dtiso()
+
+    self = params["self"]
+    upref = params["upref"]
+    tag = params["tag"]
+    title = params["title"]
+    self = params["self"]
+    authref = params["authref"]
+    seqref = params["seqref"]
+
+    approot = current_app.config['APPLICATION_ROOT']
+
+    ret = ret_hdr()
+    ret["feed"]["updated"] = dtiso
+    ret["feed"]["title"] = title
+    ret["feed"]["id"] = tag
+
+    ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
+    ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
+
+    try:
+        db_conn = dbconnect()
+        limit = int(current_app.config['PAGE_SIZE'])
+        dbdata = db_conn.get_rnd_books(limit)
+
+        book_ids = []
+        for book in dbdata:
+            book_ids.append(book[0])
+
+        dbdata = db_conn.get_books_byids(book_ids)
+        book_descr = get_books_descr(book_ids)
+
+        data = []
+        for book in dbdata:
+            zipfile = book[0]
+            filename = book[1]
+            genres = book[2]
+            author_ids = book[3]
+            seq_ids = book[4]
+            book_id = book[5]
+            lang = book[6]
+            date = str(book[7])
+            size = book[8]
+            deleted = book[9]
+
+            book_authors_data = db_conn.get_authors(author_ids)
+            authors = []
+            for auth in book_authors_data:
+                authors.append({"id": auth[0], "name": auth[1]})
+            sequences = []
+            if len(seq_ids) > 0:
+                book_seq_data = db_conn.get_seq_names(seq_ids)
+
+                for seq in book_seq_data:
+                    seq_id = seq[0]
+                    seq_name = seq[1]
+                    sequences.append({"id": seq_id, "name": seq_name})
+
+            (
+                book_title,
+                pub_isbn,
+                pub_year,
+                publisher,
+                publisher_id,
+                annotation
+            ) = ('---', None, None, None, None, '')
+            if book_id in book_descr:
+                (book_title, pub_isbn, pub_year, publisher, publisher_id, annotation) = book_descr[book_id]
+            data.append({
+                "zipfile": zipfile,
+                "filename": filename,
+                "genres": genres,
+                "authors": authors,
+                "sequences": sequences,
+                "book_title": book_title,
+                "book_id": book_id,
+                "lang": lang,
+                "date_time": date,
+                "size": size,
+                "annotation": annotation,
+                "pub_info": {
+                    "isbn": pub_isbn,
+                    "year": pub_year,
+                    "publisher": publisher,
+                    "publisher_id": publisher_id
+                },
+                "deleted": deleted
+            })
+
+        for i in data:
+            ret["feed"]["entry"].append(
+                make_book_entry(i, dtiso, authref, seqref)
+            )
+    except Exception as ex:  # pylint: disable=W0703
+        logging.error(ex)
+
     return ret

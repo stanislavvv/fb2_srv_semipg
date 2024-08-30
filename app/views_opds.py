@@ -12,9 +12,9 @@ from .views_internals import view_main, view_auth_root, view_auth_sub, view_auth
 from .views_internals import view_author_time, view_author_seqs, view_author_seq, view_author_nonseq
 from .views_internals import view_seq_root, view_seq_sub, view_seq
 from .views_internals import view_gen_root, view_gen_meta, view_genre
-from .views_internals import view_search, view_search_term
+from .views_internals import view_search, view_search_term, view_random_books
 
-from .consts import CACHE_TIME  # , CACHE_TIME_RND
+from .consts import CACHE_TIME, CACHE_TIME_RND
 
 opds = Blueprint("opds", __name__)
 
@@ -172,14 +172,14 @@ def opds_genre(gen_id, page=0):
     return resp
 
 
-# @opds.route(URL["rndbook"], methods=['GET'])
-# def opds_random_books():
-    # """random books"""
-    # data = view_random_books()
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME_RND
-    # return resp
+@opds.route(URL["rndbook"], methods=['GET'])
+def opds_random_books():
+    """random books"""
+    data = view_random_books()
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME_RND
+    return resp
 
 
 # @opds.route(URL["rndseq"], methods=['GET'])
