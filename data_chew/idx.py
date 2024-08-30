@@ -76,7 +76,8 @@ def process_books_batch(db, booklines, stage, hide_deleted=False):  # pylint: di
             auth_id = author["id"]
             authors[auth_id] = author
     # print("     skip deleted books: %d" % deleted_cnt)
-    logging.debug("     skip deleted books: %d", deleted_cnt)
+    if deleted_cnt > 0:
+        logging.debug("     skip deleted books: %d", deleted_cnt)
     db.cur.execute("SELECT book_id FROM books WHERE book_id IN ('%s');" % "','".join(book_ids))
     ret = db.cur.fetchall()
     for row in ret:

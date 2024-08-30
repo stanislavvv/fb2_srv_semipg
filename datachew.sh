@@ -4,6 +4,6 @@ if [[ -d venv ]]; then
     . venv/bin/activate
 fi
 
-./datachew.py "$@"
+exec ./datachew.py "$@"
 
 
