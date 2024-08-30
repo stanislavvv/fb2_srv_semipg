@@ -10,7 +10,7 @@ from .views_internals import view_main, view_auth_root, view_auth_sub, view_auth
 from .views_internals import view_author_time, view_author_seqs, view_author_seq, view_author_nonseq
 from .views_internals import view_seq_root, view_seq_sub, view_seq
 from .views_internals import view_gen_root, view_gen_meta, view_genre
-from .views_internals import view_search, view_search_term, view_random_books
+from .views_internals import view_search, view_search_term, view_random_books, view_random_seqs
 
 from .consts import CACHE_TIME, CACHE_TIME_RND
 
@@ -253,18 +253,18 @@ def html_random_books():
     return resp
 
 
-# @html.route(URL["rndseq"].replace("/opds", "/html", 1), methods=['GET'])
-# def html_random_seqs():
-    # """random sequences"""
-    # data = view_random_seqs()
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_list_linecnt.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME_RND
-    # return resp
+@html.route(URL["rndseq"].replace("/opds", "/html", 1), methods=['GET'])
+def html_random_seqs():
+    """random sequences"""
+    data = view_random_seqs()
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_root.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME_RND
+    return resp
 
 
 @html.route(URL["search"].replace("/opds", "/html", 1), methods=['GET'])

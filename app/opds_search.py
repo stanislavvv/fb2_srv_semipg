@@ -342,3 +342,51 @@ def random_books(params):
         logging.error(ex)
 
     return ret
+
+
+def random_seqs(params):
+    """random sequences"""
+
+    dtiso = get_dtiso()
+
+    self = params["self"]
+    upref = params["upref"]
+    baseref = params["baseref"]
+    tag = params["tag"]
+    title = params["title"]
+    self = params["self"]
+    authref = params["authref"]
+    # seqref = params["seqref"]
+    subtag = params["subtag"]
+
+    approot = current_app.config['APPLICATION_ROOT']
+
+    ret = ret_hdr()
+    ret["feed"]["updated"] = dtiso
+    ret["feed"]["title"] = title
+    ret["feed"]["id"] = tag
+
+    ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
+    ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
+
+    data = []
+    try:
+        db_conn = dbconnect()
+        limit = int(current_app.config['PAGE_SIZE'])
+        dbdata = db_conn.get_rnd_seqs(limit)
+        for seq in dbdata:
+            data.append({
+                "id": seq[0],
+                "name": seq[1],
+                "cnt": seq[2]
+            })
+    except Exception as ex:  # pylint: disable=W0703
+        logging.error(ex)
+        return ret
+
+    for seq in data:
+        ret["feed"]["entry"].append(
+            make_seq_entry(seq, dtiso, subtag, authref, baseref, clean_tpl=True)
+        )
+
+    return ret

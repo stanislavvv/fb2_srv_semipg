@@ -75,6 +75,7 @@ LANG = {
     "search_anno": "Поиск по описаниям книг по '%s'",
 
     "rnd_books": "Случайные книги",
+    "rnd_seqs": "Случайные серии"
 }
 
 cover_names = [
@@ -296,8 +297,7 @@ BOOK_REQ = {
         WHERE upper(substring(sequences.name, 1, 3)) = '%s' GROUP BY id, name;
     """,
     "get_rnd_seqs": """
-        SELECT id, name, count(*) AS cnt FROM sequences INNER JOIN seq_books ON sequences.id = seq_books.seq_id
-        GROUP BY id
+        SELECT id, name, -1 as cnt FROM sequences
         ORDER BY random() LIMIT %s;
     """,
     "get_seq": """

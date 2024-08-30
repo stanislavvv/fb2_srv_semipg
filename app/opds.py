@@ -216,7 +216,7 @@ def add_link(data, href, rel, typ):
     return data
 
 
-def make_seq_entry(seq, dtiso, subtag, authref, baseref, layout=None):
+def make_seq_entry(seq, dtiso, subtag, authref, baseref, layout=None, clean_tpl=None):
     name = seq["name"]
     id = seq["id"]
     cnt = seq["cnt"]
@@ -224,9 +224,14 @@ def make_seq_entry(seq, dtiso, subtag, authref, baseref, layout=None):
     tpl = LANG["books_num"]
     approot = current_app.config['APPLICATION_ROOT']
     if layout == "simple":
-        href = approot + baseref + "/" + urllib.parse.quote(id)
+        href = approot + baseref + urllib.parse.quote(id)
     else:
-        href = approot + baseref + "/" + urllib.parse.quote(id2path(id))
+        href = approot + baseref + urllib.parse.quote(id2path(id))
+
+    if clean_tpl is None:
+        text = tpl % cnt
+    else:
+        text = ""
 
     ret = {
         "updated": dtiso,
@@ -234,7 +239,7 @@ def make_seq_entry(seq, dtiso, subtag, authref, baseref, layout=None):
         "title": name,
         "content": {
             "@type": "text",
-            "#text": tpl % cnt
+            "#text": text
         },
         "link": {
             "@href": href,

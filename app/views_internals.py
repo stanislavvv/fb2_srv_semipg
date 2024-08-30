@@ -8,7 +8,7 @@ from .opds import main_opds, str_list, strnum_list
 from .opds_auth import auth_main, auth_books
 from .opds_seq import seq_books
 from .opds_gen import genre_books
-from .opds_search import search_main, search_term, random_books
+from .opds_search import search_main, search_term, random_books, random_seqs
 from .validate import validate_prefix, validate_id, validate_genre_meta
 from .validate import validate_genre, validate_search, redir_invalid
 from .internals import get_meta_name, get_genre_name
@@ -359,4 +359,19 @@ def view_random_books():
         "seqref": URL["seq"]
     }
     data = random_books(params)
+    return data
+
+
+def view_random_seqs():
+    """random sequences"""
+    params = {
+        "self": URL["rndseq"],
+        "upref": URL["start"],
+        "tag": "tag:search:sequences:random:",
+        "title": LANG["rnd_seqs"],
+        "authref": URL["author"],
+        "baseref": URL["genidx"],
+        "subtag": "tag:sequence:"
+    }
+    data = random_seqs(params)
     return data
