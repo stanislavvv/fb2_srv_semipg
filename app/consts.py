@@ -65,7 +65,7 @@ LANG = {
     "genres_meta": "Группы жанров",
     "genres": "Жанры",
     "genre": "Жанр ",
-    "genres_root_subtitle": "Жанры в ",
+    "genres_root_subtitle": "Жанры в группе ",
     "genre_tpl": "Жанр '%s'",
 }
 

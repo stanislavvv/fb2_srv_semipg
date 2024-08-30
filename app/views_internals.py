@@ -286,7 +286,7 @@ def view_genre(gen_id, page):
         "self": URL["genre"] + "%s" % gen_id,
         "upref": URL["genidx"],
         "tag": "tag:root:genre:" + gen_id,
-        "title": LANG["genre"] + gen_name,
+        "title": LANG["genre_tpl"] % gen_name,
         "authref": URL["author"],
         "seqref": URL["seq"],
         "name": gen_name,
