@@ -25,7 +25,7 @@ def unicode_upper(string: str) -> str:
     return ret
 
 
-def strlist(string: typing.Union[str, list[str]]) -> str:
+def strlist(string) -> str:
     """return string or first element of list"""
     if isinstance(string, str):
         return strnull(string)

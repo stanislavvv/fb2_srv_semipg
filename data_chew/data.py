@@ -67,17 +67,7 @@ def make_id(name: typing.Optional[str]) -> str:
     return hashlib.md5(norm_name.encode('utf-8').upper()).hexdigest()
 
 
-def get_genre(
-    genr: typing.Union[
-        str,
-        list[str],
-        list[dict[str, str]],
-        list[list[str]],
-        dict[str, str],
-        dict[str, dict[str, str]],
-        dict[str, list[str]]
-    ]
-) -> list[str]:
+def get_genre(genr) -> list[str]:
     """return array of genres from sometimes strange struct"""
     # pylint: disable=C0103,R0912
     ret = []
@@ -232,7 +222,7 @@ def get_sequence(seq, zip_file: str, filename: str):
     return ret
 
 
-def get_lang(lng: typing.Union[str, list[str]]) -> str:
+def get_lang(lng) -> str:
     """return lang id(s) string"""
     ret = ""
     rets = {}
@@ -286,7 +276,7 @@ def replace_book(filename: str, book, replace_data):  # FixMe types
     return book
 
 
-def get_title(title: typing.Union[str, dict[str, str]]) -> str:
+def get_title(title) -> str:
     """get stripped title from struct"""
     if isinstance(title, str):
         return title.replace('«', '"').replace('»', '"')
@@ -298,7 +288,7 @@ def get_title(title: typing.Union[str, dict[str, str]]) -> str:
     return str(title).replace('«', '"').replace('»', '"')
 
 
-def array2string(arr: typing.Optional[list[str]] = None) -> typing.Optional[str]:
+def array2string(arr) -> typing.Optional[str]:
     """array of any to string"""
     ret = []
     if arr is None:
@@ -309,7 +299,7 @@ def array2string(arr: typing.Optional[list[str]] = None) -> typing.Optional[str]
     return "".join(ret)
 
 
-def get_pub_info(pubinfo) -> typing.Tuple[typing.Optional[str], typing.Optional[str], typing.Optional[str]]:
+def get_pub_info(pubinfo):
     # FixMe types
     """get publishing vars from pubinfo"""
     isbn = None
