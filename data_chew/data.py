@@ -67,7 +67,7 @@ def make_id(name: typing.Optional[str]) -> str:
     return hashlib.md5(norm_name.encode('utf-8').upper()).hexdigest()
 
 
-def get_genre(genr) -> list[str]:
+def get_genre(genr):
     """return array of genres from sometimes strange struct"""
     # pylint: disable=C0103,R0912
     ret = []

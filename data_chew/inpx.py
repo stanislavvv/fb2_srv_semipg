@@ -11,7 +11,7 @@ from .strings import strip_quotes
 from .data import num2int
 
 
-def array_strip_empty(arr: list[str]) -> list[str]:
+def array_strip_empty(arr):
     """cleanup empty strings from array of strings"""
     ret = []
     for elem in arr:
@@ -24,7 +24,7 @@ def array_strip_empty(arr: list[str]) -> list[str]:
     return ret
 
 
-def authors2fields(authors: list[str]):
+def authors2fields(authors):
     """authors names from strings[] to struct[]"""
     ret = []
     for auth in authors:

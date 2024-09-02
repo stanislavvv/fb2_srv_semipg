@@ -80,7 +80,7 @@ def update_booklist(inpx_data, zip_file) -> bool:  # pylint: disable=C0103
     return True
 
 
-def list_zip(zip_file) -> list[str]:
+def list_zip(zip_file):
     """return list of files in zip_file"""
     ret = []
     z_file = zipfile.ZipFile(zip_file)  # pylint: disable=R1732
