@@ -10,7 +10,7 @@ from .consts import INSERT_REQ, GET_REQ
 from .strings import quote_string
 from .db import sarray2pg, bdatetime2date, make_book_descr
 
-MAX_PASS_LENGTH = 1000
+MAX_PASS_LENGTH = 4000
 MAX_PASS_LENGTH_GEN = 5
 
 PASS_SIZE_HINT = 10485760

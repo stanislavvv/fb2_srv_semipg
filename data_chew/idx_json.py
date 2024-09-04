@@ -12,7 +12,7 @@ from .idx import open_booklist
 from .strings import id2path, id2pathonly, quote_string
 from .data import seqs_in_data, nonseq_from_data, refine_book, custom_alphabet_book_title_cmp
 
-MAX_PASS_LENGTH = 1000
+MAX_PASS_LENGTH = 4000
 MAX_PASS_LENGTH_GEN = 5
 
 auth_processed = {}
