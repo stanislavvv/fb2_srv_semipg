@@ -79,3 +79,9 @@ def id2pathonly(id: str):  # pylint: disable=W0622
     first = id[:2]
     second = id[2:4]
     return first + "/" + second
+
+
+def string2filename(data: str) -> str:
+    """remove fs-dangerous characters from data"""
+    data = data.replace('/', '')
+    return data

@@ -9,7 +9,7 @@ from pathlib import Path
 from functools import cmp_to_key
 
 from .idx import open_booklist
-from .strings import id2path, id2pathonly, quote_string
+from .strings import id2path, id2pathonly, quote_string, string2filename
 from .data import seqs_in_data, nonseq_from_data, refine_book, custom_alphabet_book_title_cmp
 
 MAX_PASS_LENGTH = 4000
@@ -75,7 +75,7 @@ def make_auth_subindexes(db, pagesdir):  # pylint: disable=R0914
         idx3 = db.get_data_par1("get_authors_three", quote_string(char))
         auth_three = {}
         for char3 in idx3:
-            name3 = char3[0]
+            name3 = string2filename(char3[0])
             cnt3 = char3[1]
             auth_three[name3] = cnt3
             auth_list = {}
@@ -167,7 +167,7 @@ def make_seq_subindexes(db, pagesdir):  # pylint: disable=R0914
         idx3 = db.get_data_par1("get_seqs_three", quote_string(char))
         seq_three = {}
         for char3 in idx3:
-            name3 = char3[0]
+            name3 = string2filename(char3[0])
             cnt3 = char3[1]
             seq_three[name3] = cnt3
             seq_list = {}
