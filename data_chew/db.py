@@ -237,6 +237,7 @@ class BookDB():
 
     def get_data_par1(self, reqidx, par1):
         """get data by some request with one param"""
+        # logging.debug(GET_REQ[reqidx] % par1)
         req = GET_REQ[reqidx] % par1
         self.cur.execute(req)
         data = self.cur.fetchall()

@@ -178,7 +178,7 @@ GET_REQ = {
         WHERE upper(substring(name, 1, 1)) = '%s' GROUP BY name3;
     """,
     "get_authors": """
-        SELECT id, name FROM authors WHERE upper(substring(name, 1, 3)) = '%s';
+        SELECT id, name FROM authors WHERE upper(name) LIKE '%s%%';
     """,
     "get_seqs_cnt": """
         SELECT count(*) FROM sequences;
@@ -192,7 +192,7 @@ GET_REQ = {
         WHERE upper(substring(name, 1, 1)) = '%s' GROUP BY name3;    """,
     "get_seqs": """
         SELECT id, name FROM sequences
-        WHERE upper(substring(sequences.name, 1, 3)) = '%s' GROUP BY id, name;
+        WHERE upper(sequences.name) LIKE '%s%%' GROUP BY id, name;
     """,
     "get_genres_cnt": """
         SELECT count(*) FROM genres;
