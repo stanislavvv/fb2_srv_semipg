@@ -175,7 +175,7 @@ def auth_books(params):  # pylint: disable=R0914,R0915
 
     if layout == "sequences":
         data = sorted(data, key=cmp_to_key(custom_alphabet_name_cmp))
-        baseref = upref
+        baseref = upref + "/"
         subtag = "tag:author:" + auth_id + ":sequence:"
         for seq in data:
             ret["feed"]["entry"].append(make_seq_entry(seq, dtiso, subtag, authref, baseref, layout="simple"))

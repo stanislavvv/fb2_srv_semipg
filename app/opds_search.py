@@ -212,7 +212,6 @@ def search_term(params):
         except Exception as ex:  # pylint: disable=W0703
             logging.error(ex)
 
-        print(json.dumps(data, indent=2, ensure_ascii=False))
         for i in data:
             if restype in ("book", "bookanno"):
                 ret["feed"]["entry"].append(
