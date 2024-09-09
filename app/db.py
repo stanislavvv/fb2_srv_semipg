@@ -212,6 +212,8 @@ class BookDBro():
         # current_app.logger.debug(BOOK_REQ["get_seq_name"] % seq_id)
         self.cur.execute(BOOK_REQ["get_seq_name"] % seq_id)
         data = self.cur.fetchone()
+        if data is None:
+            return None
         # current_app.logger.debug("end")
         return data[0]
 
