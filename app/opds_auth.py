@@ -171,7 +171,7 @@ def auth_books(params):  # pylint: disable=R0914,R0915
         for book in data:
             if book["sequences"] is None:
                 data_nonseq.append(book)
-        data = data_nonseq
+        data = sorted(data_nonseq, key=cmp_to_key(custom_alphabet_book_title_cmp))
 
     if layout == "sequences":
         data = sorted(data, key=cmp_to_key(custom_alphabet_name_cmp))
@@ -181,6 +181,7 @@ def auth_books(params):  # pylint: disable=R0914,R0915
             ret["feed"]["entry"].append(make_seq_entry(seq, dtiso, subtag, authref, baseref, layout="simple"))
         return ret
     elif layout == "sequence":
+        data = sorted(data, key=cmp_to_key(custom_alphabet_book_title_cmp))  # presort unnumbered books
         data_seq = []
         seq_id = params["seq_id"]
         for book in data:
