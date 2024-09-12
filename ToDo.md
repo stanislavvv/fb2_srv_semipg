@@ -1,6 +1,9 @@
 # To Do
 
+Остался общий список книг по дате добавления.
+
 1. datachew subcommands:
+DONE
   * `clean` (or may be not?)
   * `lists`, `new_lists` -- exactly as in fb2_srv_pg
   * `fillonly`, `fillall` -- partially as in fb2_srv_pg: data in postgress will be used for search and random pages
@@ -60,6 +63,7 @@ DONE
   * `/opds/time`, `/opds/time/<page>` -- books by time, desc [file]?
 
 ## search:
+DONE
   * `/opds/search` -- main search (links to other search pages) [int]
   * `/opds/search-books` -- books list with search term in title [db]
   * `/opds/search-booksanno` -- books list with search term in annotation [db]
@@ -67,6 +71,7 @@ DONE
   * `/opds/search-sequences` -- list of sequenses with search term in name [db]
 
 ## random:
+DONE
   * `/opds/random-books/` -- random books list (new at reload) [db]|[file]?
   * `/opds/random-sequences/` -- random sequences list (new at reload) [db]|[file]?
   * `/opds/rnd-genresindex/` -- genres meta list (static) [file]

@@ -72,7 +72,7 @@ def fromlists(stage):
     if stage in ("global", "authors", "sequences", "genres"):
         zipdir = app.config['ZIPS']
         pagesdir = app.config['STATIC']
-        process_lists(db, zipdir, pagesdir, stage)
+        process_lists(db, zipdir, pagesdir, stage, hide_deleted=hide_deleted)
     else:
         try:
             process_lists_db(db, zipdir, str(stage), hide_deleted=hide_deleted)
