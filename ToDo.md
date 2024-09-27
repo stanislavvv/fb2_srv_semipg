@@ -60,7 +60,7 @@ DONE
   * `/opds/genre/<id>`, `/opds/genre/<id>/<page>` -- books in genres [file]|[db]?
 
 ## books by time:
-  * `/opds/time`, `/opds/time/<page>` -- books by time, desc [file]?
+  * `/opds/time`, `/opds/time/<page>` -- books by time, desc ~~[file]?~~ [db]
 
 ## search:
 DONE
