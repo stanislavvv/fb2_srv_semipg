@@ -11,7 +11,7 @@ from .views_internals import view_author_time, view_author_seqs, view_author_seq
 from .views_internals import view_seq_root, view_seq_sub, view_seq
 from .views_internals import view_gen_root, view_gen_meta, view_genre
 from .views_internals import view_search, view_search_term, view_random_books, view_random_seqs
-from .views_internals import view_rnd_gen_root, view_rnd_gen_meta, view_rnd_genre
+from .views_internals import view_rnd_gen_root, view_rnd_gen_meta, view_rnd_genre, view_time
 
 from .consts import CACHE_TIME, CACHE_TIME_RND
 
@@ -380,16 +380,16 @@ def html_rnd_genre(gen_id):
     return resp
 
 
-# @html.route(URL["time"].replace("/opds", "/html", 1), methods=['GET'])
-# @html.route(URL["time"].replace("/opds", "/html", 1) + "/<int:page>", methods=['GET'])
-# def html_time(page=0):
-    # """all books of author order by date"""
-    # data = view_time(page)
-    # title = data['feed']['title']
-    # updated = data['feed']['updated']
-    # entry = data['feed']['entry']
-    # link = data['feed']['link']
-    # page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
-    # resp = Response(page, mimetype='text/html')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@html.route(URL["time"].replace("/opds", "/html", 1), methods=['GET'])
+@html.route(URL["time"].replace("/opds", "/html", 1) + "/<int:page>", methods=['GET'])
+def html_time(page=0):
+    """all books of author order by date"""
+    data = view_time(page)
+    title = data['feed']['title']
+    updated = data['feed']['updated']
+    entry = data['feed']['entry']
+    link = data['feed']['link']
+    page = render_template('opds_sequence.html', title=title, updated=updated, link=link, entry=entry)
+    resp = Response(page, mimetype='text/html')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp

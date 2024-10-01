@@ -13,7 +13,7 @@ from .views_internals import view_author_time, view_author_seqs, view_author_seq
 from .views_internals import view_seq_root, view_seq_sub, view_seq
 from .views_internals import view_gen_root, view_gen_meta, view_genre
 from .views_internals import view_search, view_search_term, view_random_books, view_random_seqs
-from .views_internals import view_rnd_gen_root, view_rnd_gen_meta, view_rnd_genre
+from .views_internals import view_rnd_gen_root, view_rnd_gen_meta, view_rnd_genre, view_time
 
 from .consts import CACHE_TIME, CACHE_TIME_RND
 
@@ -273,12 +273,12 @@ def opds_rnd_genre(gen_id):
     return resp
 
 
-# @opds.route(URL["time"], methods=['GET'])
-# @opds.route(URL["time"] + "/<int:page>", methods=['GET'])
-# def opds_time(page=0):
-    # """all books of author order by date"""
-    # data = view_time(page)
-    # xml = xmltodict.unparse(data, pretty=True)
-    # resp = Response(xml, mimetype='text/xml')
-    # resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
-    # return resp
+@opds.route(URL["time"], methods=['GET'])
+@opds.route(URL["time"] + "/<int:page>", methods=['GET'])
+def opds_time(page=0):
+    """all books of author order by date"""
+    data = view_time(page)
+    xml = xmltodict.unparse(data, pretty=True)
+    resp = Response(xml, mimetype='text/xml')
+    resp.headers['Cache-Control'] = "max-age=%d, must-revalidate" % CACHE_TIME
+    return resp

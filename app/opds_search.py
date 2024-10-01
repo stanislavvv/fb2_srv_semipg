@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """library opds functions for authors pages"""
 
-import json
+# import json
 import urllib
 import logging
 
@@ -388,4 +388,116 @@ def random_seqs(params):
             make_seq_entry(seq, dtiso, subtag, authref, baseref, clean_tpl=True)
         )
 
+    return ret
+
+
+def books_global_by_time(params):
+    """make data for books by time page"""
+    dtiso = get_dtiso()
+    approot = current_app.config['APPLICATION_ROOT']
+    # rootdir = current_app.config['STATIC']
+    self = params["self"]
+    # idx = self.replace("/opds", "")
+    title = params["title"]
+    tag = params["tag"]
+    self = params["self"]
+    upref = params["upref"]
+    authref = params["authref"]
+    seqref = params["seqref"]
+    page = params["page"]
+
+    ret = ret_hdr()
+    ret["feed"]["updated"] = dtiso
+    ret["feed"]["title"] = title
+    ret["feed"]["id"] = tag
+    ret = add_link(ret, approot + self, "self", "application/atom+xml;profile=opds-catalog")
+    ret = add_link(ret, approot + upref, "up", "application/atom+xml;profile=opds-catalog")
+
+    data = []
+    limit = int(current_app.config['PAGE_SIZE'])
+    offset = limit * page
+    next_link = page + 1
+    prev_link = page - 1
+    if prev_link > 0:
+        add_link(ret, approot + self + "/" + str(prev_link), "prev", "application/atom+xml;profile=opds-catalog")
+    elif prev_link == 0:
+        add_link(ret, approot + self, "prev", "application/atom+xml;profile=opds-catalog")
+
+    add_link(ret, approot + self + "/" + str(next_link), "next", "application/atom+xml;profile=opds-catalog")
+
+    try:
+        db_conn = dbconnect()
+        limit = int(current_app.config['PAGE_SIZE'])
+        dbdata = db_conn.get_books_by_time(limit, offset)
+
+        book_ids = []
+        for book in dbdata:
+            book_ids.append(book[0])
+
+        dbdata = db_conn.get_books_byids(book_ids)
+        book_descr = get_books_descr(book_ids)
+
+        data = []
+        for book in dbdata:
+            zipfile = book[0]
+            filename = book[1]
+            genres = book[2]
+            author_ids = book[3]
+            seq_ids = book[4]
+            book_id = book[5]
+            lang = book[6]
+            date = str(book[7])
+            size = book[8]
+            deleted = book[9]
+
+            book_authors_data = db_conn.get_authors(author_ids)
+            authors = []
+            for auth in book_authors_data:
+                authors.append({"id": auth[0], "name": auth[1]})
+            sequences = []
+            if len(seq_ids) > 0:
+                book_seq_data = db_conn.get_seq_names(seq_ids)
+
+                for seq in book_seq_data:
+                    seq_id = seq[0]
+                    seq_name = seq[1]
+                    sequences.append({"id": seq_id, "name": seq_name})
+
+            (
+                book_title,
+                pub_isbn,
+                pub_year,
+                publisher,
+                publisher_id,
+                annotation
+            ) = ('---', None, None, None, None, '')
+            if book_id in book_descr:
+                (book_title, pub_isbn, pub_year, publisher, publisher_id, annotation) = book_descr[book_id]
+            data.append({
+                "zipfile": zipfile,
+                "filename": filename,
+                "genres": genres,
+                "authors": authors,
+                "sequences": sequences,
+                "book_title": book_title,
+                "book_id": book_id,
+                "lang": lang,
+                "date_time": date,
+                "size": size,
+                "annotation": annotation,
+                "pub_info": {
+                    "isbn": pub_isbn,
+                    "year": pub_year,
+                    "publisher": publisher,
+                    "publisher_id": publisher_id
+                },
+                "deleted": deleted
+            })
+
+        data = sorted(data, key=lambda s: unicode_upper(s["date_time"]))
+
+        for book in data:
+            ret["feed"]["entry"].append(make_book_entry(book, dtiso, authref, seqref))
+    except Exception as ex:  # pylint: disable=W0703
+        logging.error(ex)
     return ret

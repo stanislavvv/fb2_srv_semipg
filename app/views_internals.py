@@ -8,7 +8,7 @@ from .opds import main_opds, str_list, strnum_list
 from .opds_auth import auth_main, auth_books
 from .opds_seq import seq_books
 from .opds_gen import genre_books, rnd_genre_books
-from .opds_search import search_main, search_term, random_books, random_seqs
+from .opds_search import search_main, search_term, random_books, random_seqs, books_global_by_time
 from .validate import validate_prefix, validate_id, validate_genre_meta
 from .validate import validate_genre, validate_search, redir_invalid
 from .internals import get_meta_name, get_genre_name
@@ -424,3 +424,16 @@ def view_rnd_genre(gen_id):
         "name": gen_name
     }
     return rnd_genre_books(params)
+
+
+def view_time(page=0):
+    params = {
+        "self": URL["time"],
+        "tag": "tag:root:books:time",
+        "upref": URL["start"],
+        "title": LANG["all_books_by_time"],
+        "authref": URL["author"],
+        "seqref": URL["seq"],
+        "page": page
+    }
+    return books_global_by_time(params)

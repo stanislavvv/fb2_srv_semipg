@@ -76,7 +76,9 @@ LANG = {
 
     "rnd_books": "Случайные книги",
     "rnd_seqs": "Случайные серии",
-    "rnd_genre_books": "Случайные книги в жанре '%s'"
+    "rnd_genre_books": "Случайные книги в жанре '%s'",
+    
+    "all_books_by_time": "Все книги по дате поступления"
 }
 
 cover_names = [
@@ -349,7 +351,7 @@ BOOK_REQ = {
         OFFSET %s;
     """,
     "get_books_by_time_pag": """
-        SELECT zipfile, filename, genres, book_id, lang, date, size, deleted FROM books
+        SELECT book_id, zipfile, filename, genres, lang, date, size, deleted FROM books
         ORDER BY date DESC, filename DESC
         LIMIT %s
         OFFSET %s;
