@@ -1,7 +1,5 @@
 # To Do
 
-Остался общий список книг по дате добавления.
-
 1. datachew subcommands:
 DONE
   * `clean` (or may be not?)
@@ -60,6 +58,7 @@ DONE
   * `/opds/genre/<id>`, `/opds/genre/<id>/<page>` -- books in genres [file]|[db]?
 
 ## books by time:
+DONE
   * `/opds/time`, `/opds/time/<page>` -- books by time, desc ~~[file]?~~ [db]
 
 ## search:
