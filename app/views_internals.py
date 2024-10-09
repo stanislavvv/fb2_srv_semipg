@@ -370,8 +370,8 @@ def view_random_seqs():
         "tag": "tag:search:sequences:random:",
         "title": LANG["rnd_seqs"],
         "authref": URL["author"],
-        "baseref": URL["genidx"],
-        "subtag": "tag:sequence:"
+        "baseref": URL["seq"],
+        "subtag": "tag:search:sequence:random:"
     }
     data = random_seqs(params)
     return data
