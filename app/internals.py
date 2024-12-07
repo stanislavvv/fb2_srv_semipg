@@ -276,18 +276,6 @@ def pubinfo_anno(pubinfo):
     return ret
 
 
-# def get_author_name(auth_id: str):
-    # """author name by id"""
-    # ret = ""
-    # try:
-        # db_conn = dbconnect()
-        # dbauthdata = db_conn.get_author(auth_id)
-        # ret = dbauthdata[0][1]
-    # except Exception as ex:  # pylint: disable=W0703
-        # logging.error(ex)
-    # return ret
-
-
 def get_meta_name(meta_id):
     """meta name by id"""
     ret = None
