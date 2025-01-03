@@ -187,6 +187,7 @@ def auth_books(params):  # pylint: disable=R0914,R0915
         for book in data:
             if book["sequences"] is not None and seq_name is not None:
                 for s in book["sequences"]:
+                    seq_num = 0
                     if s.get("id") == seq_id:
                         snum = s.get("num")
                         if snum is not None:
