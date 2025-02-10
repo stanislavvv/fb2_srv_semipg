@@ -26,10 +26,11 @@ def usage():
     # print(" clean     -- remove static data from disk")
     print(" lists     -- make all lists from zips, does not touch database")
     print(" new_lists -- update lists from updated/new zips, does not touch database")
+    print(" tables    -- prepare tables in database")
     print(" fillonly  -- quickly fill all existing lists to database, but only books not in db")
     print(" fillall   -- quickly fill all existing lists to database, update existing")
     print(" stage[1-4]  -- stage1, ..., stage4 for creating static pages")
-    print("full data processing: `for i in new_lists fillonly stage1 stage2 stage3 stage4; do ./datachew.py $i; done`")
+    print("full data processing: `for i in new_lists tables fillonly stage1 stage2 stage3 stage4; do ./datachew.py $i; done`")
 
 
 def clean():
@@ -100,6 +101,8 @@ if __name__ == "__main__":
             renew_lists()
         elif sys.argv[1] == "new_lists":
             new_lists()
+        elif sys.argv[1] == "tables":
+            fromlists("maketables")
         elif sys.argv[1] == "fillall":
             fromlists("fillall")
         elif sys.argv[1] == "fillonly":

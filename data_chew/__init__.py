@@ -111,14 +111,8 @@ def process_lists_db(db, zipdir, stage, hide_deleted=False):  # pylint: disable=
 
     if stage in ("fillonly", "fillall"):
         print("begin stage %s" % stage)
-        try:
-            db.create_tables()
-            i = 0
-        except Exception as ex:  # pylint: disable=W0703
-            db.conn.rollback()
-            logging.error("table creation exception:")
-            logging.error(ex)
-            return False
+
+        i = 0
         for booklist in sorted(glob.glob(zipdir + '/*.zip.list') + glob.glob(zipdir + '/*.zip.list.gz')):
             logging.info("[%s] %s", str(i), booklist)
             process_list_books_batch_db(db, booklist, stage, hide_deleted)
@@ -132,16 +126,25 @@ def process_lists_db(db, zipdir, stage, hide_deleted=False):  # pylint: disable=
             logging.error(ex)
             return False
 
+    elif stage == "maketables":
+        print("begin stage %s" % stage)
+        try:
+            db.create_tables()
+        except Exception as ex:  # pylint: disable=W0703
+            db.conn.rollback()
+            logging.error("table creation exception:")
+            logging.error(ex)
+            return False
+        try:
+            db.commit()
+        except Exception as ex:  # pylint: disable=W0703
+            db.conn.rollback()
+            logging.error("db commit exception:")
+            logging.error(ex)
+        print("end")
     elif stage == "newonly":
         logging.error("NOT IMPLEMENTED")
     else:
         logging.error("unknown stage: %s", stage)
 
-    # try:
-        # # recalc counts and commit
-        # recalc_commit(db)
-    # except Exception as ex:  # pylint: disable=W0703
-        # db.conn.rollback()
-        # logging.error(ex)
-        # return False
     return True
