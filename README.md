@@ -14,6 +14,7 @@ fb2_srv_pseudostatic & fb2_srv_pg mix:
 
 ```shell
 ./datachew.sh new_lists  # prepare .zip.list with books data
+./datachew.sh tables     # create tables in empty database
 ./datachew.sh fillonly   # fill database with new books
 ./datachew.sh stage1     # prepare static data directory
 ./datachew.sh stage2     # create authors pages data directories/files struct
